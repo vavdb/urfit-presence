@@ -484,3 +484,5 @@ $RECYCLE.BIN/
 *.swp
 Data/app.db
 Data\app.db
+Data/app.db-shm
+Data/app.db-wal
