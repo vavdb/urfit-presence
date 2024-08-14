@@ -43,14 +43,22 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
                                                                options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services
+    .AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+
+
 var app = builder.Build();
+
+
+var userManager = app.Services.GetRequiredService<UserManager<IdentityUser>>();
+ApplicationDbInitializer.SeedUsers(userManager);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

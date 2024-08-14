@@ -10,6 +10,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("urfit");
+        
         base.OnModelCreating(modelBuilder);
         
         modelBuilder.Entity<Presence>()
@@ -32,8 +34,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         
         modelBuilder.Entity<Person>()
                     .HasData(
-                             new Person { Id = 1, Name = "Leydi", Email = "leydi@urfit.nu" },
-                             new Person { Id = 2, Name = "Vincent van den Braken", Email = "vincent@vandenbraken.com" }
+                             new Person { Id = 1, Name = "Leydi van den Braken Breuls", Email = "leydi@urfit.nu" },
+                             new Person { Id = 2, Name = "Vincent van den Braken Breuls", Email = "vincent@vandenbraken.com" }
                             );        
     }
 }
