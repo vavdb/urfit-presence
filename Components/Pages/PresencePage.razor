@@ -1,0 +1,170 @@
+﻿@page "/"
+@using MudBlazor
+@using System.Linq
+@using System.Collections.Generic
+@using System.Text.Json
+@using System.Threading.Tasks
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.Rendering
+@using urfit_presence.Data
+@inject IDbContextFactory<ApplicationDbContext> ctxf
+
+<MudContainer Fixed="true">
+    <MudStepperExtended Variant="Variant.Filled" Color="Color.Primary" ShowNextButton="true">
+        <MudStepExtended Icon="@Icons.Material.Filled.Approval" Title="Moment">
+            <MudListExtended T="TimeSlot" ItemCollection="TimeSlots" Clickable="true" SelectedValue="_selectedTimeSlot" SelectedValueChanged="UpdateSelectedDate"/>
+        </MudStepExtended>
+        <MudStepExtended Icon="@Icons.Material.Filled.Approval" Title="Date">
+            <MudDatePicker PickerVariant="PickerVariant.Static" Color="Color.Secondary" Rounded="true" @bind-Date="_selectedDate"/>
+        </MudStepExtended>
+        <MudStepExtended Icon="@Icons.Material.Filled.Approval" Title="People">
+            <MudText Typo="Typo.h6">Person</MudText>
+            <MudListExtended ItemCollection="People" @bind-SelectedValues="_selectedPeople" Clickable="true" MultiSelection="true"/>
+            <MudStack Row>
+                <MudTextField T="string" Label="Add person"/>
+                <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Add"></MudIconButton>
+            </MudStack>            
+        </MudStepExtended>
+    </MudStepperExtended>
+    
+    
+    <MudGrid Class="full-width">
+        @if (false)
+        {
+        
+        <MudItem xl="4" xs="12">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h6">Person</MudText>
+                <MudListExtended ItemCollection="People" @bind-SelectedValues="_selectedPeople" Clickable="true" MultiSelection="true"/>
+                <MudStack Row>
+                    <MudTextField T="string" Label="Add person"/>
+                    <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Add"></MudIconButton>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xl="4" xs="12">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h6">Moment</MudText>
+                <MudListExtended T="TimeSlot" ItemCollection="TimeSlots" Clickable="true" SelectedValue="_selectedTimeSlot" SelectedValueChanged="UpdateSelectedDate"/>
+            </MudPaper>
+        </MudItem>
+        }
+        <MudItem xl="4" xs="12">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudDatePicker PickerVariant="PickerVariant.Static" Color="Color.Secondary" Rounded="true" @bind-Date="_selectedDate"/>
+                <MudButton OnClick="AddPresence"
+                           Color="Color.Success"
+                           StartIcon="@Icons.Material.Outlined.Add"
+                           Variant="Variant.Outlined">
+                    Add
+                    <MudStack AlignItems="AlignItems.Start" Class="pl-4">
+                        <MudText>
+                            @(_selectedPeople is null ? "" : string.Join(",", _selectedPeople))
+                        </MudText>
+                        <MudText>
+                            @_selectedTimeSlot
+                        </MudText>
+                        <MudText>
+                            @_selectedDate.Value.ToString("dddd dd MMM")
+                        </MudText>
+                    </MudStack>
+                </MudButton>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudDataGrid Items="@Presences" Groupable="true" GroupExpanded="false">
+                <Columns>
+                    <PropertyColumn Property="x => x.DateWithTimeSlotTime" Grouping/>
+                    <PropertyColumn Property="x => x.Person"/>
+                    <PropertyColumn Property="x => x.TimeSlot"/>
+                </Columns>
+            </MudDataGrid>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private ICollection<TimeSlot> TimeSlots { get; set; } = new List<TimeSlot>();
+    private ICollection<Person> People { get; set; } = new List<Person>();
+    private IEnumerable<Presence> Presences { get; set; } = new List<Presence>();
+    private TimeSlot _selectedTimeSlot;
+    private IEnumerable<Person> _selectedPeople;
+    private DateTime? _selectedDate = DateTime.Today.AddDays(1);
+
+    private async void UpdateSelectedDate(TimeSlot? st)
+    {
+        if (st is null) return;
+        _selectedTimeSlot = st;
+        _selectedDate = GetClosestDayOfWeek(DateTime.Now, st.DayOfWeek);
+    }
+
+    public static DateTime GetClosestDayOfWeek(DateTime date, DayOfWeek dayOfWeek)
+    {
+        // Calculate the difference from Monday
+        int diffDayOfWeek = (int)dayOfWeek - (int)date.DayOfWeek;
+
+        // If the difference is negative, it means the given date is after Monday in the week
+        if (diffDayOfWeek < -3)
+        {
+            diffDayOfWeek += 7;
+        }
+
+        // If the difference is greater than 3, it means the given date is closer to the previous Monday
+        if (diffDayOfWeek > 3)
+        {
+            diffDayOfWeek -= 7;
+        }
+
+        // Return the closest Monday
+        return date.AddDays(diffDayOfWeek);
+    }
+
+    private bool firstRender = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!firstRender) return;
+        await LoadData();
+        firstRender = false;
+    }
+
+    private async Task LoadData()
+    {
+        var nearestTimeSlotId = 3;
+        await using var context = await ctxf.CreateDbContextAsync();
+        TimeSlots = await context.TimeSlots.ToListAsync();
+        People = await context.People.ToListAsync();
+        Presences = await context.Presences
+                                 .Include(p => p.Person)
+                                 .Include(p => p.TimeSlot)
+                                 .OrderBy(p => p.Date)
+                                 .ThenBy(p => p.TimeSlot.StartTime)
+                                 .ToListAsync();
+    }
+
+    private async Task AddPresence()
+    {
+        if (_selectedTimeSlot is null || _selectedPeople is null || _selectedDate is null)
+        {
+            return;
+        }
+
+        await using var context = await ctxf.CreateDbContextAsync();
+        foreach (var _selectedPerson in _selectedPeople)
+        {
+            context.Attach(_selectedPerson);
+            context.Attach(_selectedTimeSlot);
+            var presence = new Presence
+                           {
+                               Person = _selectedPerson, TimeSlot = _selectedTimeSlot, Date = DateOnly.FromDateTime(_selectedDate.Value)
+                           };
+            context.Presences.Add(presence);
+        }
+
+        await context.SaveChangesAsync();
+        await LoadData();
+    }
+
+}

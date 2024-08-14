@@ -1,18 +1,18 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
-        <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        <MudText Typo="Typo.h5" Class="ml-3">URfit Presence</MudText>
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu />
+        <NavMenu/>
     </MudDrawer>
     <MudMainContent Class="mt-16 pa-4">
         @Body
@@ -27,7 +27,25 @@
 </div>
 
 @code {
-    private bool _drawerOpen = true;
+
+
+    MudTheme _theme = new MudTheme()
+                      {
+                          PaletteLight = new PaletteLight()
+                                         {
+                                             Primary = "#af9906",
+                                             Secondary = "#fcdd09"
+                                         },
+                          PaletteDark = new PaletteDark()
+                                        {
+                                            Secondary = "#0f47af",
+                                            Primary = "#af9906",
+                                        }
+                      };
+    
+    private bool _isDarkMode = true;
+
+    private bool _drawerOpen = false;
 
     private void DrawerToggle()
     {
@@ -35,5 +53,3 @@
     }
 
 }
-
-
