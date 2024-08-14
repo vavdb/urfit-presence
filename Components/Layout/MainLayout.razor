@@ -14,11 +14,10 @@
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu/>
     </MudDrawer>
-    <MudMainContent Class="mt-16 pa-4">
+    <MudMainContent Class="mt-2">
         @Body
     </MudMainContent>
 </MudLayout>
-
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
@@ -27,8 +26,6 @@
 </div>
 
 @code {
-
-
     MudTheme _theme = new MudTheme()
                       {
                           PaletteLight = new PaletteLight()
@@ -38,18 +35,17 @@
                                          },
                           PaletteDark = new PaletteDark()
                                         {
+                                            AppbarBackground =  "#0f47af",
+                                            AppbarText = "#fcdd09",
                                             Secondary = "#0f47af",
                                             Primary = "#af9906",
                                         }
                       };
     
     private bool _isDarkMode = true;
-
     private bool _drawerOpen = false;
-
     private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
-
 }

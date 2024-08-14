@@ -57,8 +57,12 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 var app = builder.Build();
 
 
-var userManager = app.Services.GetRequiredService<UserManager<IdentityUser>>();
-ApplicationDbInitializer.SeedUsers(userManager);
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await ApplicationDbInitializer.SeedUsersAndRolesAsync(userManager, roleManager);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
