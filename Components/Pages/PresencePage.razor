@@ -8,8 +8,10 @@
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components.Rendering
+@using Microsoft.AspNetCore.Identity
 @using urfit_presence.Data
 @inject IDbContextFactory<ApplicationDbContext> ctxf
+@inject UserManager<ApplicationUser> userManager
 
 <MudContainer Fixed="true">
     <MudExpansionPanels>
@@ -42,8 +44,6 @@
                 <MudDatePicker PickerVariant="PickerVariant.Static" Color="Color.Secondary" Rounded="true" DateChanged="UpdateSelectedDate"/>
             </ChildContent>
         </MudExpansionPanel>
-        
-        
     </MudExpansionPanels>
     
     <MudPaper Class="pa-4 pl-6 mt-4">
@@ -61,20 +61,18 @@
             <MudText>@_presentPeople.Count() / @_availablePeople.Count</MudText>
         </div>
         
-        <MudListExtended T="Person" ItemCollection="_availablePeople" SelectedValues="_presentPeople" SelectedValuesChanged="UpdatePresentPeople" Clickable="true" MultiSelection="true" MultiSelectionComponent="MultiSelectionComponent.SwitchM3"/>
+        <MudListExtended T="ApplicationUser" ItemCollection="_availablePeople" SelectedValues="_presentPeople" SelectedValuesChanged="UpdatePresentPeople" Clickable="true" MultiSelection="true" MultiSelectionComponent="MultiSelectionComponent.SwitchM3"/>
         <MudStack Row>
-            <MudTextField T="string" Label="Add person" @bind-Value="_newPerson"/>
-            <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Add" OnClick="AddPerson"></MudIconButton>
+            <MudButton Color="Color.Success" StartIcon="@Icons.Material.Filled.Add" OnClick="AddPerson">Create User</MudButton>
         </MudStack>
     </MudPaper>
 
-    
     <MudGrid Class="full-width">
         <MudItem xs="12">
             <MudDataGrid Items="@Presences" Groupable="true" GroupExpanded="false">
                 <Columns>
                     <PropertyColumn Property="x => x.DateWithTimeSlotTime" Grouping/>
-                    <PropertyColumn Property="x => x.Person"/>
+                    <PropertyColumn Property="x => x.ApplicationUser"/>
                     <PropertyColumn Property="x => x.TimeSlot"/>
                 </Columns>
             </MudDataGrid>
@@ -83,15 +81,15 @@
 </MudContainer>
 
 @code {
-    private IEnumerable<Person> _presentPeople = [];
-    private List<Person> _availablePeople = [];
+    private IEnumerable<ApplicationUser> _presentPeople = [];
+    private List<ApplicationUser> _availablePeople = [];
     private List<TimeSlot> TimeSlots { get; set; } = [];
-    private List<Person> People { get; set; } = [];
+    private List<ApplicationUser> People { get; set; } = [];
     private List<Presence> Presences { get; set; } = [];
     private TimeSlot? _selectedTimeSlot;
     private DateTime? _selectedDate;
 
-    private async void UpdatePresentPeople(IEnumerable<Person>? pt)
+    private async void UpdatePresentPeople(IEnumerable<ApplicationUser> pt)
     {
         if (_selectedDate is null || _selectedTimeSlot is null) return;
         
@@ -103,17 +101,17 @@
         {
             var presence = new Presence
                            {
-                               Person = p, TimeSlot = _selectedTimeSlot, Date = DateOnly.FromDateTime(_selectedDate.Value)
+                               ApplicationUser = p, TimeSlot = _selectedTimeSlot, Date = DateOnly.FromDateTime(_selectedDate.Value)
                            };
             context.Attach(presence.TimeSlot);
-            context.Attach(presence.Person);
+            context.Attach(presence.ApplicationUser);
             context.Presences.Add(presence);
             Presences.Add(presence);
         }
         
         foreach (var p in peopleToRemove)
         {
-            var presence = Presences.FirstOrDefault(pr => pr.Person == p 
+            var presence = Presences.FirstOrDefault(pr => pr.ApplicationUser == p 
                                                           && pr.TimeSlot == _selectedTimeSlot 
                                                           && pr.Date == DateOnly.FromDateTime(_selectedDate.Value));
             context.Presences.Remove(presence);
@@ -144,7 +142,7 @@
     {
         if (!_selectedDate.HasValue) return;
         if (_selectedTimeSlot is null) return;
-        _presentPeople = Presences.Where(p => p.TimeSlot == _selectedTimeSlot && p.Date == DateOnly.FromDateTime(_selectedDate.Value)).Select(p => p.Person).ToList();;
+        _presentPeople = Presences.Where(p => p.TimeSlot == _selectedTimeSlot && p.Date == DateOnly.FromDateTime(_selectedDate.Value)).Select(p => p.ApplicationUser).ToList();;
     }
 
     public static DateTime GetClosestDayOfWeek(DateTime date, DayOfWeek dayOfWeek)
@@ -183,9 +181,8 @@
         var nearestTimeSlotId = 3;
         await using var context = await ctxf.CreateDbContextAsync();
         TimeSlots = await context.TimeSlots.ToListAsync();
-        People = await context.People.ToListAsync();
+        People = await userManager.Users.ToListAsync();
         Presences = await context.Presences
-                                 .Include(p => p.Person)
                                  .Include(p => p.TimeSlot)
                                  .OrderBy(p => p.Date)
                                  .ThenBy(p => p.TimeSlot.StartTime)
@@ -197,15 +194,15 @@
     private string _newPerson;
     private async Task AddPerson()
     {
-        await using var context = await ctxf.CreateDbContextAsync();
-        var newPerson = new Person() { Name = _newPerson }; 
-        await context.People.AddAsync(newPerson);
-        await context.SaveChangesAsync();
-        People.Add(newPerson);
-        
+
+        var user = new ApplicationUser();
+        user.UserName = "username";
+        user.Email = "e@mai.l";
+        user.EmailConfirmed = true;
+        userManager.CreateAsync(user);
     }
 
-    private async Task AddPresence(Person p, TimeSlot t, DateOnly d)
+    private async Task AddPresence(ApplicationUser p, TimeSlot t, DateOnly d)
     {
         if (_selectedTimeSlot is null || _presentPeople is null || _selectedDate is null)
         {
@@ -220,7 +217,7 @@
             context.Attach(_selectedTimeSlot);
             var presence = new Presence
                            {
-                               Person = _selectedPerson, TimeSlot = _selectedTimeSlot, Date = DateOnly.FromDateTime(_selectedDate.Value)
+                               ApplicationUser = _selectedPerson, TimeSlot = _selectedTimeSlot, Date = DateOnly.FromDateTime(_selectedDate.Value)
                            };
             context.Presences.Add(presence);
             Presences.Add(presence);

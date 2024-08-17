@@ -1,4 +1,6 @@
-﻿public class TimeSlot
+﻿namespace urfit_presence.Data;
+
+public class TimeSlot
 {
     [Key]
     public int Id { get; set; }
