@@ -1,0 +1,4731 @@
+{
+  "openapi" : "3.0.0",
+  "servers" : [ {
+    "description" : "SwaggerHub API Auto Mocking",
+    "url" : "https://api.informer.eu/v1"
+  } ],
+  "info" : {
+    "title" : "InformerOnline API",
+    "description" : "Move your app forward with the InformerOnline API<br /> First make sure you have a valid Informer account, then click <a href='https://app.informer.eu/settings/api/' target='_blank'>here</a> to create your API key.<br /><br />ALL DATES ARE IN FORMAT 'YYYY-mm-dd'!<br /><br />All fields that are given in the documentation MUST be present in the data you send to the api.<br />To leave a field empty, use 0 for integers and '' for strings.<br /><br />If anything in this documentation is not clear enough or you require assistance related to the API, you can contact support at api@informer.eu",
+    "version" : "0.1.5"
+  },
+  "security" : [ {
+    "Code" : [ ],
+    "Apikey" : [ ]
+  } ],
+  "paths" : {
+    "/administration/" : {
+      "get" : {
+        "summary" : "Get administration details",
+        "description" : "Get administrations details.\n",
+        "tags" : [ "Administration" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of administration details",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Administration"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/relations/" : {
+      "get" : {
+        "summary" : "Get a list of relations",
+        "description" : "Get a list of all relations. For each relation the contacts are included.\n",
+        "parameters" : [ {
+          "name" : "records",
+          "in" : "query",
+          "required" : false,
+          "description" : "number of records to receive (default = 100)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "description" : "page to start (default = 0)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "search",
+          "in" : "query",
+          "required" : false,
+          "description" : "string to search for in relations",
+          "schema" : {
+            "type" : "string"
+          }
+        },
+        {
+          "name" : "last_edit",
+          "in" : "query",
+          "required" : false,
+          "description" : "Only get relations that have been edited after this date (YYYY-mm-dd)",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "tags" : [ "Relations" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of available administrations",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Relations"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/relation/" : {
+      "post" : {
+        "summary" : "Create a new relation",
+        "description" : "Create a new relation. Most fields are required but there are some exeptions. The relation_number is not required. If this value is 0 a new relation number is generated. The fields template_sales_invoice and payment_condition_id are optional. The defalt values will be used if the fields are nod send.",        
+        "tags" : [ "Relations" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the new relation.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Relation not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RelationInput"
+              }
+            }
+          },
+          "description" : "The fields and values to create a relation.",
+          "required" : true
+        }
+      }
+    },
+    "/relation/{id}/" : {
+      "get" : {
+        "summary" : "Get a relation",
+        "description" : "Returns a singel relation by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the relation to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Relations" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the relation.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Relations"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Relation not found."
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a relation",
+        "description" : "Update a relation by Id. Not all fields are required. You can send only the fields that you want to update.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the relation to update.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Relations" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the new relation.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Relation not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RelationInput"
+              }
+            }
+          },
+          "description" : "The fields and values to update.",
+          "required" : true
+        }
+      },
+      "delete" : {
+        "summary" : "Delete a relation",
+        "description" : "Delete a relation by Id. The relation can only be deleted if there are no document links to the relation that you want to delete.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the relation to delete.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Relations" ],
+        "responses" : {
+          "200" : {
+            "description" : "The relation is removed.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Relation not found."
+          }
+        }
+      }
+    },
+    "/contact/" : {
+      "post" : {
+        "summary" : "Create a contact",
+        "description" : "Create a new contact for a relation",
+        "tags" : [ "Relations" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the new relation.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Relation not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ContactInput"
+              }
+            }
+          },
+          "description" : "The fields and values to create a contact.",
+          "required" : true
+        }
+      }
+    },
+    "/contact/{id}/" : {
+      "get" : {
+        "summary" : "Get a contact",
+        "description" : "Returns a singel contact by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the contact to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Relations" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the contact.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Contacts2"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Contact not found."
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a contact",
+        "description" : "Contact to edit",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the contact to update.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Relations" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the new contact.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Relation not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ContactInput"
+              }
+            }
+          },
+          "description" : "The fields and values to update. Not all fields are required. You can send only the fields that you want to update.",
+          "required" : true
+        }
+      },
+      "delete" : {
+        "summary" : "Delete a contact",
+        "description" : "Delete a contact by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the contact to delete.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Relations" ],
+        "responses" : {
+          "200" : {
+            "description" : "The contact is removed.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Contact not found."
+          }
+        }
+      }
+    },
+    "/invoices/sales/" : {
+      "get" : {
+        "summary" : "Get sales invoices",
+        "description" : "Get a list of all sales invoices. For each invoice the lines are included.",
+        "parameters" : [ {
+          "name" : "filter",
+          "in" : "query",
+          "required" : false,
+          "description" : "A filter for invoices (open, expired, collect, draft).",
+          "schema" : {
+            "type" : "string"
+          }
+        },
+        {
+          "name" : "records",
+          "in" : "query",
+          "required" : false,
+          "description" : "number of records to receive (default = 100)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "description" : "page to start (default = 0)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "last_edit",
+          "in" : "query",
+          "required" : false,
+          "description" : "Only get sales invoices that have been edited after this date (YYYY-mm-dd)",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "tags" : [ "Invoices Sales" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of sales invoices",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Sales_invoices"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },    
+    "/invoice/sales/" : {
+      "post" : {
+        "summary" : "Create a sales invoice",
+        "description" : "Create a new sales invoice",
+        "tags" : [ "Invoices Sales" ],
+        "responses" : {
+          "default" : {
+            "description" : "Invoice could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Sales_Invoice"
+              }
+            }
+          },
+          "description" : "The fields and values to create a sales invoice.",
+          "required" : true
+        }
+      }
+    },
+    "/invoice/sales/{id}/" : {
+      "get" : {
+        "summary" : "Get a single sales invoice",
+        "description" : "Returns a single sales invoice by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the sales invoice to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Invoices Sales" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the invoice.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Sales_invoices"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Purchase invoice not found."
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a sales invoice",
+        "description" : "Sales invoice to edit",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the sales invoice to update.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Invoices Sales" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the sales invoice.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Sales invoice not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Sales_Invoice"
+              }
+            }
+          },
+          "description" : "The fields and values to update. All fields are required, all lines need to be added.",
+          "required" : true
+        }
+      }
+    },
+    "/invoice/sales/send/" : {
+        "post" : {
+          "summary" : "Send a sales invoice",
+          "description" : "Allowed send options can be found in the /invoice/sales/ call",
+          "tags" : [ "Invoices Sales" ],
+          "responses" : {
+            "default" : {
+              "description" : "Invoice could not be sent",
+              "content" : {
+                "application/json" : {
+                  "schema" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          },
+          "requestBody" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Send"
+                }
+              }
+            },
+            "description" : "The fields and values to send a sales invoice.",
+            "required" : true
+          }
+        }
+      },
+    "/salesbooks/" : {
+      "get" : {
+        "summary" : "Get salesbooks",
+        "description" : "Get a list of all salesbooks. For each invoice the lines are included.",
+        "parameters" : [ {
+          "name" : "filter",
+          "in" : "query",
+          "required" : false,
+          "description" : "A filter for invoices (open, expired, process).",
+          "schema" : {
+            "type" : "string"
+          }
+        },
+        {
+          "name" : "records",
+          "in" : "query",
+          "required" : false,
+          "description" : "number of records to receive (default = 100)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "description" : "page to start (default = 0)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "last_edit",
+          "in" : "query",
+          "required" : false,
+          "description" : "Only get salesbook invoices that have been edited after this date (YYYY-mm-dd)",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "tags" : [ "Salesbook" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of salesbooks",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Salesbook"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/salesbook/{id}/" : {
+      "get" : {
+        "summary" : "Get a singel purchase invoice",
+        "description" : "Returns a singel purchase invoice by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the purchase invoice to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Salesbook" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the invoice.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Salesbook"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Purchase invoice not found."
+          }
+        }
+      }
+    },
+    "/salesbook/" : {
+      "post" : {
+        "summary" : "Create a salesbooks",
+        "description" : "Create a new salesbooks",
+        "tags" : [ "Salesbook" ],
+        "responses" : {
+          "default" : {
+            "description" : "Salesbook could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Salesbook"
+              }
+            }
+          },
+          "description" : "The fields and values to create a sales invoice.",
+          "required" : true
+        }
+      }
+    },
+    "/salesorders/" : {
+      "get" : {
+        "summary" : "Get sales orders",
+        "description" : "Get a list of all sales orders. For each sales orders the lines are included.",
+        "parameters" : [ {
+          "name" : "filter",
+          "in" : "query",
+          "required" : false,
+          "description" : "A filter for sales orders (open, processed, billed, canceled).",
+          "schema" : {
+            "type" : "string"
+          }
+        },
+        {
+          "name" : "records",
+          "in" : "query",
+          "required" : false,
+          "description" : "number of records to receive (default = 100)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "description" : "page to start (default = 0)",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Sales orders" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of sales orders",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Salesorders"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/salesorder/" : {
+      "post" : {
+        "summary" : "Create a sales order",
+        "description" : "Create a new sales order",
+        "tags" : [ "Sales orders" ],
+        "responses" : {
+          "default" : {
+            "description" : "Sales order could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Quotation"
+              }
+            }
+          },
+          "description" : "The fields and values to create a sales order.",
+          "required" : true
+        }
+      }
+    }, 
+    "/salesorder/{id}/" : {
+      "get" : {
+        "summary" : "Get a single sales order",
+        "description" : "Returns a single sales order by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the sales order to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Sales orders" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the sales order.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Salesorders"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Sales order not found."
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a sales order",
+        "description" : "Sales order to edit",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the sales order to update.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Sales orders" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the sales order.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Sales order not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Quotation"
+              }
+            }
+          },
+          "description" : "The fields and values to update. All fields are required, all lines need to be added.",
+          "required" : true
+        }
+      }
+    }, 
+    "/subscriptions/" : {
+      "get" : {
+        "summary" : "Get subscriptions",
+        "description" : "Get a list of all purchase invoices. For each subscription the lines are included.",
+        "parameters" : [ {
+          "name" : "filter",
+          "in" : "query",
+          "required" : false,
+          "description" : "A filter for subscriptions (ended, active).",
+          "schema" : {
+            "type" : "string"
+          }
+        },
+        {
+          "name" : "records",
+          "in" : "query",
+          "required" : false,
+          "description" : "number of records to receive (default = 100)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "description" : "page to start (default = 0)",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Subscriptions" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of subscriptions",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Subscriptions"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscription/" : {
+      "post" : {
+        "summary" : "Create a subscription",
+        "description" : "Create a new subscription",
+        "tags" : [ "Subscriptions" ],
+        "responses" : {
+          "default" : {
+            "description" : "Subscription could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Subscription"
+              }
+            }
+          },
+          "description" : "The fields and values to create a subscription.",
+          "required" : true
+        }
+      }
+    },
+    "/subscription/{id}/" : {
+      "get" : {
+        "summary" : "Get a singel purchase invoice",
+        "description" : "Returns a singel subscription by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the subscription to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Subscriptions" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the relation.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Subscriptions"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Subscription not found."
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a subscription",
+        "description" : "Subscription to edit",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the subscription to update.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Subscriptions" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the subscription.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Sales invoice not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Subscription"
+              }
+            }
+          },
+          "description" : "The fields and values to update. All fields are required, all lines need to be added.",
+          "required" : true
+        }
+      }
+    },
+    "/quotations/" : {
+      "get" : {
+        "summary" : "Get quotations",
+        "description" : "Get a list of all quotations. For each quotation the lines are included.",
+        "parameters" : [ {
+          "name" : "filter",
+          "in" : "query",
+          "required" : false,
+          "description" : "A filter for quotations (expired, open, draft).",
+          "schema" : {
+            "type" : "string"
+          }
+        },
+        {
+          "name" : "records",
+          "in" : "query",
+          "required" : false,
+          "description" : "number of records to receive (default = 100)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "description" : "page to start (default = 0)",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Quotations" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of quotations",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Quotations"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quotation/" : {
+      "post" : {
+        "summary" : "Create a quotations",
+        "description" : "Create a new quotations",
+        "tags" : [ "Quotations" ],
+        "responses" : {
+          "default" : {
+            "description" : "Quotation could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Quotation"
+              }
+            }
+          },
+          "description" : "The fields and values to create a quotation.",
+          "required" : true
+        }
+      }
+    },
+    "/quotation/{id}/" : {
+      "get" : {
+        "summary" : "Get a single quotation",
+        "description" : "Returns a single quotation by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the quotation to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Quotations" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the quotation.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Quotations"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Quotation not found."
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a quotation",
+        "description" : "Quotation to edit",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the quotation to update.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Quotations" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the quotation.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Quotation not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Quotation"
+              }
+            }
+          },
+          "description" : "The fields and values to update. All fields are required, all lines need to be added.",
+          "required" : true
+        }
+      }
+    },
+    "/invoices/purchase/" : {
+      "get" : {
+        "summary" : "Get purchase invoices",
+        "description" : "Get a list of all purchase invoices. For each invoice the lines are included.",
+        "parameters" : [ {
+          "name" : "filter",
+          "in" : "query",
+          "required" : false,
+          "description" : "A filter for invoices (open, expired, process, paid, approve).",
+          "schema" : {
+            "type" : "string"
+          }
+        },
+        {
+          "name" : "records",
+          "in" : "query",
+          "required" : false,
+          "description" : "number of records to receive (default = 100)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "description" : "page to start (default = 0)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "last_edit",
+          "in" : "query",
+          "required" : false,
+          "description" : "Only get purchase invoices that have been edited after this date (YYYY-mm-dd)",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "tags" : [ "Invoices Purchases" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of purchase invoices",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Purchase_invoices"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice/purchase/{id}/" : {
+      "get" : {
+        "summary" : "Get a singel purchase invoice",
+        "description" : "Returns a singel purchase invoice by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the purchase invoice to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Invoices Purchases" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the invoice.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Purchase_invoices"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Purchase invoice not found."
+          }
+        }
+      }
+    },
+    "/invoice/purchase/" : {
+      "post" : {
+        "summary" : "Create a purchase invoice",
+        "description" : "Create a new purchase invoice",
+        "tags" : [ "Invoices Purchases" ],
+        "responses" : {
+          "default" : {
+            "description" : "Purchase invoice could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_purchase_invoice"
+              }
+            }
+          },
+          "description" : "The fields and values to create a purchase invoice.",
+          "required" : true
+        }
+      }
+    },
+    "/receipts/" : {
+      "get" : {
+        "summary" : "Get receipts",
+        "description" : "Get a list of all receipts.",
+        "parameters" : [ {
+          "name" : "filter",
+          "in" : "query",
+          "required" : false,
+          "description" : "A filter for receipts (open, rocessed).",
+          "schema" : {
+            "type" : "string"
+          }
+        },
+        {
+          "name" : "records",
+          "in" : "query",
+          "required" : false,
+          "description" : "number of records to receive (default = 100)",
+          "schema" : {
+            "type" : "integer"
+          }
+        },
+        {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "description" : "page to start (default = 0)",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Receipts" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of receipts",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Receipts"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/receipt/" : {
+      "post" : {
+        "summary" : "Create a receipt",
+        "description" : "Create a new receipt",
+        "tags" : [ "Receipts" ],
+        "responses" : {
+          "default" : {
+            "description" : "Receipt could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Receipt"
+              }
+            }
+          },
+          "description" : "The fields and values to create a receipt.",
+          "required" : true
+        }
+      }
+    },
+    "/receipt/{id}/" : {
+      "get" : {
+        "summary" : "Get a single receipt",
+        "description" : "Returns a single receipt by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the receipt to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Receipts" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the receipt.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Receipts"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Receipt not found."
+          }
+        }
+      }
+    },
+    "/reports/balance/" : {
+      "get" : {
+        "summary" : "Get the balance of administration",
+        "description" : "Get the balance of the administration",
+        "parameters" : [ {
+          "name" : "year_from",
+          "in" : "query",
+          "required" : true,
+          "description" : "Year from for balance entries",
+          "schema" : {
+            "type" : "string"
+          }
+        }, 
+        {
+          "name" : "year_to",
+          "in" : "query",
+          "required" : true,
+          "description" : "Year to for balance entries",
+          "schema" : {
+            "type" : "string"
+          }
+        }, 
+        {
+          "name" : "period",
+          "in" : "query",
+          "required" : true,
+          "description" : "Show balance per period (\"month\", \"quarter\", \"year\")",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "tags" : [ "Reports" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array with the balance per ledger",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Report_balance"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/column-balance/" : {
+        "get" : {
+          "summary" : "Get the column balance of administration",
+          "description" : "Get the column balance of the administration",
+          "parameters" : [ {
+            "name" : "year",
+            "in" : "query",
+            "required" : true,
+            "description" : "Year for column balance entries",
+            "schema" : {
+              "type" : "string"
+            }
+          }, 
+          {
+            "name" : "period_from",
+            "in" : "query",
+            "required" : true,
+            "description" : "Starting month for column balance entries",
+            "schema" : {
+              "type" : "string"
+            }
+          }, 
+          {
+            "name" : "period_to",
+            "in" : "query",
+            "required" : true,
+            "description" : "Ending month for column balance entries",
+            "schema" : {
+              "type" : "string"
+            }
+          }, 
+          {
+            "name" : "ledger_number_from",
+            "in" : "query",
+            "required" : true,
+            "description" : "Ledger number of the starting ledger",
+            "schema" : {
+              "type" : "string"
+            }
+          }, 
+          {
+            "name" : "ledger_number_to",
+            "in" : "query",
+            "required" : true,
+            "description" : "Ledger number of the ending ledger",
+            "schema" : {
+              "type" : "string"
+            }
+          } ],
+          "tags" : [ "Reports" ],
+          "responses" : {
+            "200" : {
+              "description" : "An array with the column balance",
+              "content" : {
+                "application/json" : {
+                  "schema" : {
+                    "type" : "array",
+                    "items" : {
+                      "$ref" : "#/components/schemas/Report_balance"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+    "/reports/ledger/" : {
+      "get" : {
+        "summary" : "Get the report of ledger",
+        "description" : "Get the report of the ledger",
+        "parameters" : [ {
+          "name" : "ledger_id",
+          "in" : "query",
+          "required" : true,
+          "description" : "id of the ledger you want the entries for",
+          "schema" : {
+            "type" : "string"
+          }
+        },
+        {
+          "name" : "year_from",
+          "in" : "query",
+          "required" : true,
+          "description" : "Year from for ledger entries",
+          "schema" : {
+            "type" : "string"
+          }
+        }, 
+        {
+          "name" : "year_to",
+          "in" : "query",
+          "required" : true,
+          "description" : "Year to for ledger entries",
+          "schema" : {
+            "type" : "string"
+          }
+        }, 
+        {
+          "name" : "period_from",
+          "in" : "query",
+          "required" : true,
+          "description" : "Month from for ledger entries",
+          "schema" : {
+            "type" : "string"
+          }
+        }, 
+        {
+          "name" : "period_to",
+          "in" : "query",
+          "required" : true,
+          "description" : "Month to for ledger entries",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "tags" : [ "Reports" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array with the entries for a ledger",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Report_ledger"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rides/" : {
+      "get" : {
+        "summary" : "Get rides",
+        "description" : "Get a list of all rides.",
+        "tags" : [ "Rides" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of rides",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Rides"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ride/" : {
+      "post" : {
+        "summary" : "Create a ride",
+        "description" : "Create a new ride",
+        "tags" : [ "Rides" ],
+        "responses" : {
+          "default" : {
+            "description" : "Ride could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Rides"
+              }
+            }
+          },
+          "description" : "The fields and values to create a ride.",
+          "required" : true
+        }
+      }
+    },
+    "/ride/{id}/" : {
+      "get" : {
+        "summary" : "Get a single ride",
+        "description" : "Returns a single ride by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the ride to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Rides" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the ride.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Rides"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ride not found."
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a ride",
+        "description" : "Ride to edit",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the ride to update.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Rides" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the ride.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ride not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Rides"
+              }
+            }
+          },
+          "description" : "The fields and values to update. All fields are required.",
+          "required" : true
+        }
+      }
+    },
+    "/memorandumbooks/" : {
+      "get" : {
+        "summary" : "Get memorandum books",
+        "description" : "Get a list of all memorandum books. For each entry the lines are included.",
+        "tags" : [ "Memorandum book" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of memorandum books",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Memorandum"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/memorandumbook/" : {
+      "post" : {
+        "summary" : "Create an entry for memorandum book",
+        "description" : "Create a new entry for memorandum book",
+        "tags" : [ "Memorandum book" ],
+        "responses" : {
+          "default" : {
+            "description" : "Entry could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Memorandum"
+              }
+            }
+          },
+          "description" : "The fields and values to create an entry for memorandum book.",
+          "required" : true
+        }
+      }
+    },
+    "/ledgers/" : {
+      "get" : {
+        "summary" : "Get ledgers",
+        "description" : "Get a list of all ledgers.",
+        "tags" : [ "Ledgers" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of ledgers",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Ledgers"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journals/" : {
+      "get" : {
+        "summary" : "Get journals",
+        "description" : "Get a list of all journals.",
+        "tags" : [ "Journals" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of journals",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Journals"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/costs/" : {
+      "get" : {
+        "summary" : "Get costs",
+        "description" : "Get a list of all costs center accounts.",
+        "tags" : [ "Costs" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of costs",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Costs"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/currencies/" : {
+      "get" : {
+        "summary" : "Get costs",
+        "description" : "Get a list of all currencies.",
+        "tags" : [ "Currencies" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of currencies",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Currencies"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payment-conditions/" : {
+      "get" : {
+        "summary" : "Get payment conditions",
+        "description" : "Get a list of all payment conditions.",
+        "tags" : [ "Payment conditions" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of payment conditions",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PaymentConditions"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscription-types/" : {
+        "get" : {
+          "summary" : "Get subscription types",
+          "description" : "Get a list of all subscription types.",
+          "tags" : [ "Subscription types" ],
+          "responses" : {
+            "200" : {
+              "description" : "An array of subscription types",
+              "content" : {
+                "application/json" : {
+                  "schema" : {
+                    "type" : "array",
+                    "items" : {
+                      "$ref" : "#/components/schemas/SubscriptionTypes"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+    "/product/{id}/" : {
+      "get" : {
+        "summary" : "Get product",
+        "description" : "Get a product.",
+        "tags" : [ "Products" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "id to search for in products",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of products",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Products"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/" : {
+      "get" : {
+        "summary" : "Get products",
+        "description" : "Get a list of all products.",
+        "tags" : [ "Products" ],
+        "parameters" : [ {
+          "name" : "search",
+          "in" : "query",
+          "required" : false,
+          "description" : "string to search for in products",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of products",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Products"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/units/" : {
+      "get" : {
+        "summary" : "Get units",
+        "description" : "Get a list of all units.",
+        "tags" : [ "Units" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of units",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Units"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/templates/" : {
+      "get" : {
+        "summary" : "Get templates",
+        "description" : "Get a list of all document templates.",
+        "tags" : [ "Templates" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of templates",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Templates"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vat/" : {
+      "get" : {
+        "summary" : "Get vat",
+        "description" : "Get a list of all ledgers.",
+        "tags" : [ "Vat" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of vat",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Vat"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicles/" : {
+      "get" : {
+        "summary" : "Get vehicles",
+        "description" : "Get a list of all vehicles.",
+        "tags" : [ "Vehicles" ],
+        "responses" : {
+          "200" : {
+            "description" : "An array of vehicles",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Vehicles"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicle/" : {
+      "post" : {
+        "summary" : "Create a vehicle",
+        "description" : "Create a new vehicle",
+        "tags" : [ "Vehicles" ],
+        "responses" : {
+          "default" : {
+            "description" : "Vehicle could not be created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Vehicles"
+              }
+            }
+          },
+          "description" : "The fields and values to create a vehicle.",
+          "required" : true
+        }
+      }
+    },
+    "/vehicle/{id}/" : {
+      "get" : {
+        "summary" : "Get a single vehicle",
+        "description" : "Returns a single vehicle by Id.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the vehicle to fetch.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Vehicles" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the vehicle.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Vehicles"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Vehicle not found."
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a ride",
+        "description" : "Ride to edit",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the vehicle to update.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Vehicles" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the id for the vehicle.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Vehicle not found."
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Create_Vehicles"
+              }
+            }
+          },
+          "description" : "The fields and values to update. All fields are required.",
+          "required" : true
+        }
+      }
+    },
+    "/pdf/{type}/{id}" : {
+      "get" : {
+        "summary" : "Get a pdf",
+        "description" : "Returns a Base64 PDF.",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "description" : "The type of the PDF. (sales/purchase/receipt)",
+          "schema" : {
+            "type" : "string"
+          }
+        },  
+        {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "description" : "The id of the PDF.",
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "tags" : [ "Pdf" ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns the PDF in base64 format",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Get_pdf"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "PDF not found."
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "securitySchemes" : {
+      "Apikey" : {
+        "type" : "apiKey",
+        "in" : "header",
+        "name" : "Apikey",
+        "description" : ""
+      },
+      "Code" : {
+        "type" : "apiKey",
+        "in" : "header",
+        "name" : "Securitycode",
+        "description" : ""
+      }
+    },
+    "schemas" : {
+      "Administrations" : {
+        "type" : "object",
+        "properties" : {
+          "administration" : {
+            "$ref" : "#/components/schemas/AdministrationsArray"
+          }
+        }
+      },
+      "AdministrationsArray" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/Administration"
+          }
+        }
+      },
+      "Administration" : {
+        "type" : "object",
+        "properties" : {
+          "administration" : {
+            "type" : "object",
+            "properties" : {
+              "company_name" : {
+                "type" : "string",
+                "description" : "The name of the administration."
+              },
+              "street" : {
+                "type" : "string",
+                "description" : "The street name."
+              },
+              "house_number" : {
+                "type" : "string",
+                "description" : "House number."
+              },
+              "house_number_suffix" : {
+                "type" : "string",
+                "description" : "Suffix for the house number."
+              },
+              "zip" : {
+                "type" : "string",
+                "description" : "The address zip code."
+              },
+              "city" : {
+                "type" : "string",
+                "description" : "The city."
+              },
+              "country" : {
+                "type" : "string",
+                "description" : "The country ISO code."
+              },
+              "phone_number" : {
+                "type" : "string",
+                "description" : "Phone number."
+              },
+              "email" : {
+                "type" : "string",
+                "description" : "E-mail address."
+              },
+              "web" : {
+                "type" : "string",
+                "description" : "Website."
+              },
+              "coc" : {
+                "type" : "string",
+                "description" : "Chamber of Commerce number."
+              },
+              "vat" : {
+                "type" : "string",
+                "description" : "VAT number."
+              },
+              "iban" : {
+                "type" : "string",
+                "description" : "IBAN number."
+              },
+              "trade_module" : {
+                "type" : "string",
+                "description" : "Whether or not the trade module is enabled for this administration"
+              }
+            }
+          }
+        }
+      },
+      "Relations" : {
+        "type" : "object",
+        "properties" : {
+          "relation" : {
+            "$ref" : "#/components/schemas/RelationsArray"
+          }
+        }
+      },
+      "RelationsArray" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/Relation"
+          }
+        }
+      },
+      "Relation" : {
+        "type" : "object",
+        "properties" : {
+          "relation_number" : {
+            "type" : "string",
+            "description" : "The number of the relation."
+          },
+          "relation_type" : {
+            "type" : "string",
+            "description" : "business (0) or private (1)."
+          },
+          "company_name" : {
+            "type" : "string",
+            "description" : "The company name (used for business)."
+          },
+          "firstname" : {
+            "type" : "string",
+            "description" : "First name of relation name (used for private)."
+          },
+          "surname_prefix" : {
+            "type" : "string",
+            "description" : "Middel name of relation name (used for private)."
+          },
+          "surname" : {
+            "type" : "string",
+            "description" : "Last name of relation name (used for private)."
+          },
+          "street" : {
+            "type" : "string",
+            "description" : "The street name."
+          },
+          "house_number" : {
+            "type" : "string",
+            "description" : "House number."
+          },
+          "house_number_suffix" : {
+            "type" : "string",
+            "description" : "Suffix for the house number."
+          },
+          "zip" : {
+            "type" : "string",
+            "description" : "The address zip code."
+          },
+          "city" : {
+            "type" : "string",
+            "description" : "The city."
+          },
+          "country" : {
+            "type" : "string",
+            "description" : "The country ISO code."
+          },
+          "phone_number" : {
+            "type" : "string",
+            "description" : "Phone number."
+          },
+          "fax_number" : {
+            "type" : "string",
+            "description" : "Fax number."
+          },
+          "web" : {
+            "type" : "string",
+            "description" : "Website."
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "E-mail address."
+          },
+          "coc" : {
+            "type" : "string",
+            "description" : "Chamber of Commerce number."
+          },
+          "vat" : {
+            "type" : "string",
+            "description" : "VAT number."
+          },
+          "iban" : {
+            "type" : "string",
+            "description" : "IBAN code."
+          },
+          "bic" : {
+            "type" : "string",
+            "description" : "BIC code."
+          },
+          "email_invoice" : {
+            "type" : "string",
+            "description" : "E-mail address for the invoice, quotation, etc."
+          },
+          "sales_invoice_template_id" : {
+            "type" : "string",
+            "description" : "The default template for this relation."
+          },
+          "payment_condition_id" : {
+            "type" : "string",
+            "description" : "The default payment condition for this relation."
+          },
+          "contacts" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "$ref" : "#/components/schemas/Contact"
+              }
+            }
+          }
+        }
+      },
+      "RelationInput" : {
+        "properties" : {
+          "relation_number" : {
+            "type" : "string",
+            "description" : "The number of the relation."
+          },
+          "relation_type" : {
+            "type" : "string",
+            "description" : "business (0) or private (1)."
+          },
+          "company_name" : {
+            "type" : "string",
+            "description" : "The company name (used for business)."
+          },
+          "firstname" : {
+            "type" : "string",
+            "description" : "First name of relation name (used for private)."
+          },
+          "surname_prefix" : {
+            "type" : "string",
+            "description" : "Middel name of relation name (used for private)."
+          },
+          "surname" : {
+            "type" : "string",
+            "description" : "Last name of relation name (used for private)."
+          },
+          "street" : {
+            "type" : "string",
+            "description" : "The street name."
+          },
+          "house_number" : {
+            "type" : "string",
+            "description" : "House number."
+          },
+          "house_number_suffix" : {
+            "type" : "string",
+            "description" : "Suffix for the house number."
+          },
+          "zip" : {
+            "type" : "string",
+            "description" : "The address zip code."
+          },
+          "city" : {
+            "type" : "string",
+            "description" : "The city."
+          },
+          "country" : {
+            "type" : "string",
+            "description" : "The country ISO code."
+          },
+          "phone_number" : {
+            "type" : "string",
+            "description" : "Phone number."
+          },
+          "fax_number" : {
+            "type" : "string",
+            "description" : "Fax number."
+          },
+          "web" : {
+            "type" : "string",
+            "description" : "Website."
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "E-mail address."
+          },
+          "coc" : {
+            "type" : "string",
+            "description" : "Chamber of Commerce number."
+          },
+          "vat" : {
+            "type" : "string",
+            "description" : "VAT number."
+          },
+          "iban" : {
+            "type" : "string",
+            "description" : "IBAN code."
+          },
+          "bic" : {
+            "type" : "string",
+            "description" : "BIC code."
+          },
+          "email_invoice" : {
+            "type" : "string",
+            "description" : "E-mail address for the invoice, quotation, etc."
+          },
+          "sales_invoice_template_id" : {
+            "type" : "string",
+            "description" : "The default template for this relation."
+          },
+          "payment_condition_id" : {
+            "type" : "string",
+            "description" : "The default payment condition for this relation."
+          }
+        },
+        "type" : "object"
+      },
+      "Contacts" : {
+        "type" : "object",
+        "properties" : {
+          "relation" : {
+            "$ref" : "#/components/schemas/ContactsArray"
+          }
+        }
+      },
+      "ContactsArray" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/Contact"
+          }
+        }
+      },
+      "Contact" : {
+        "type" : "object",
+        "properties" : {
+          "initials" : {
+            "type" : "string",
+            "description" : "The contact initials."
+          },
+          "firstname" : {
+            "type" : "string",
+            "description" : "The firstname of the contact."
+          },
+          "surname_prefix" : {
+            "type" : "string",
+            "description" : "The surname prefix of the contact."
+          },
+          "surname" : {
+            "type" : "string",
+            "description" : "The surname of the contact."
+          },
+          "gender" : {
+            "type" : "string",
+            "description" : "The gender of the contact."
+          },
+          "function" : {
+            "type" : "string",
+            "description" : "The function of the contact."
+          },
+          "department" : {
+            "type" : "string",
+            "description" : "The department of the contact."
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "The phone number of the contact."
+          },
+          "mobile" : {
+            "type" : "string",
+            "description" : "The mobile number of the contact."
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "The email of the contact."
+          }
+        }
+      },
+      "Create_Sales_Invoice" : {
+        "properties" : {
+          "relation_id" : {
+            "type" : "integer",
+            "description" : "Id of relation."
+          },
+          "contact_name" : {
+            "type" : "string",
+            "description" : "Name of contactperson."
+          },
+          "reference" : {
+            "type" : "string",
+            "description" : "Name of referenceperson."
+          },
+          "invoice_date" : {
+            "type" : "string",
+            "description" : "Date of the invoice."
+          },
+          "payment_condition_id" : {
+            "type" : "integer",
+            "description" : "ID of a payment condition."
+          },
+          "currency_id" : {
+            "type" : "integer",
+            "description" : "Id of the currency."
+          },
+          "vat_option" : {
+            "type" : "string",
+            "description" : "If amount is incl or excl vat (must be 'incl' or 'excl')."
+          },
+          "template_id" : {
+            "type" : "integer",
+            "description" : "Id of template."
+          },
+          "comment" : {
+            "type" : "string",
+            "description" : "Extra comment included with the invoice."
+          },
+          "footer" : {
+            "type" : "string",
+            "description" : "Footer text included with the invoice."
+          },
+          "lines" : {
+            "type" : "array",
+            "description" : "Array containing all lines.",
+            "items" : {
+              "$ref" : "#/components/schemas/Single_line"
+            }
+          }
+        },
+        "type" : "object"
+      },
+      "Single_line" : {
+        "properties" : {
+          "qty" : {
+            "type" : "integer",
+            "description" : "The amount of product/service."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "A description of the product/service."
+          },
+          "amount" : {
+            "type" : "number",
+            "description" : "Price with a maximum of 2 decimals."
+          },
+          "discount" : {
+            "type" : "number",
+            "description" : "Discount with a maximum of 2 decimals. Not including percentage sign."
+          },
+          "vat_id" : {
+            "type" : "integer",
+            "description" : "Id of the vat."
+          },
+          "ledger_id" : {
+            "type" : "integer",
+            "description" : "ID of ledger"
+          },
+          "costs_id" : {
+            "type" : "integer",
+            "description" : "Id of the cost centre."
+          }
+        },
+        "type" : "object"
+      },
+      "Create_Quotation" : {
+        "properties" : {
+          "relation_id" : {
+            "type" : "integer",
+            "description" : "Id of relation."
+          },
+          "contact_name" : {
+            "type" : "string",
+            "description" : "Name of contactperson."
+          },
+          "reference" : {
+            "type" : "string",
+            "description" : "Name of referenceperson."
+          },
+          "quotation_date" : {
+            "type" : "string",
+            "description" : "Date of the quotation."
+          },
+          "payment_condition_id" : {
+            "type" : "integer",
+            "description" : "ID of a payment condition."
+          },
+          "currency_id" : {
+            "type" : "integer",
+            "description" : "Id of the currency."
+          },
+          "vat_option" : {
+            "type" : "string",
+            "description" : "If amount is incl or excl vat (must be 'incl' or 'excl')."
+          },
+          "template_id" : {
+            "type" : "integer",
+            "description" : "Id of template."
+          },
+          "comment" : {
+            "type" : "string",
+            "description" : "Extra comment included with the invoice."
+          },
+          "footer" : {
+            "type" : "string",
+            "description" : "Footer text included with the invoice."
+          },
+          "lines" : {
+            "type" : "array",
+            "description" : "Array containing all lines.",
+            "items" : {
+              "$ref" : "#/components/schemas/Single_line_quotation"
+            }
+          }
+        },
+        "type" : "object"
+      },
+      "Single_line_quotation" : {
+        "properties" : {
+          "qty" : {
+            "type" : "integer",
+            "description" : "The amount of product/service."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "A description of the product/service."
+          },
+          "amount" : {
+            "type" : "number",
+            "description" : "Price with a maximum of 2 decimals."
+          },
+          "discount" : {
+            "type" : "number",
+            "description" : "Discount with a maximum of 2 decimals. Not including percentage sign."
+          },
+          "vat_id" : {
+            "type" : "integer",
+            "description" : "Id of the vat."
+          },
+          "ledger_id" : {
+            "type" : "integer",
+            "description" : "ID of ledger"
+          }
+        },
+        "type" : "object"
+      },
+      "ContactInput" : {
+        "properties" : {
+          "relation_id" : {
+            "type" : "string",
+            "description" : "The id of the relation the contact belongs to."
+          },
+          "initials" : {
+            "type" : "string",
+            "description" : "The contact initials."
+          },
+          "firstname" : {
+            "type" : "string",
+            "description" : "The firstname of the contact."
+          },
+          "surname_prefix" : {
+            "type" : "string",
+            "description" : "The surname prefix of the contact."
+          },
+          "surname" : {
+            "type" : "string",
+            "description" : "The surname of the contact."
+          },
+          "gender" : {
+            "type" : "string",
+            "description" : "The gender of the contact."
+          },
+          "function" : {
+            "type" : "string",
+            "description" : "The function of the contact."
+          },
+          "department" : {
+            "type" : "string",
+            "description" : "The department of the contact."
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "The phone number of the contact."
+          },
+          "mobile" : {
+            "type" : "string",
+            "description" : "The mobile number of the contact."
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "The email of the contact."
+          }
+        },
+        "type" : "object"
+      },
+      "Ledgers" : {
+        "type" : "object",
+        "properties" : {
+          "ledgers" : {
+            "$ref" : "#/components/schemas/LedgersArray"
+          }
+        }
+      },
+      "LedgersArray" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/Ledger"
+          }
+        }
+      },
+      "Ledger" : {
+        "type" : "object",
+        "required" : [ "number", "description", "type", "category" ],
+        "properties" : {
+          "number" : {
+            "type" : "string",
+            "description" : "The ledger code."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description for the ledger."
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "The type of ledger. 1-Profit, 2-Costs, 3-Balance."
+          },
+          "category" : {
+            "type" : "string",
+            "description" : "The accounttype of ledger. 1-Normal, 2-Debtors, 3-Creditors, 4-VAT account, 5-Profit/Sales."
+          },
+          "vat_report_id" : {
+            "type" : "string",
+            "description" : "The vat code for the tax report."
+          },
+          "blocked" : {
+            "type" : "string",
+            "description" : "Is this ledger account blocked (0 or 1)."
+          }
+        }
+      },
+      "PaymentConditions" : {
+        "type" : "object",
+        "properties" : {
+          "paymentconditions" : {
+            "$ref" : "#/components/schemas/PaymentConditionsArray"
+          }
+        }
+      },
+      "PaymentConditionsArray" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/PaymentCondition"
+          }
+        }
+      },
+      "PaymentCondition" : {
+        "type" : "object",
+        "required" : [ "description", "payment_option", "days" ],
+        "properties" : {
+          "description" : {
+            "type" : "string",
+            "description" : "Description for the payment option."
+          },
+          "payment_option" : {
+            "type" : "string",
+            "description" : "Payment option type 'prepay','cash','ideal','paypal','account' or 'collection'."
+          },
+          "days" : {
+            "type" : "integer",
+            "description" : "The days for the expiery date."
+          },
+          "footer_text_invoice" : {
+            "type" : "string",
+            "description" : "Footer text for sales invoices."
+          },
+          "footer_text_quotation" : {
+            "type" : "string",
+            "description" : "Footer text for quotations."
+          },
+          "default" : {
+            "type" : "integer",
+            "description" : "Default payment condition."
+          }
+        }
+      },
+      "SubscriptionTypes" : {
+        "type" : "object",
+        "properties" : {
+          "paymentconditions" : {
+            "$ref" : "#/components/schemas/SubscriptionTypesArray"
+          }
+        }
+      },
+      "SubscriptionTypesArray" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/SubscriptionType"
+          }
+        }
+      },
+      "SubscriptionType" : {
+        "type" : "object",
+        "required" : [ "description", "payment_option", "days" ],
+        "properties" : {
+          "code" : {
+            "type" : "string",
+            "description" : "Code for subscription type."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the subscription type."
+          },
+          "description" : {
+            "type" : "integer",
+            "description" : "Description of the subscription type."
+          }
+        }
+      },
+      "Templates" : {
+        "type" : "object",
+        "properties" : {
+          "templates" : {
+            "$ref" : "#/components/schemas/TemplatesArray"
+          }
+        }
+      },
+      "TemplatesArray" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/Template"
+          }
+        }
+      },
+      "Template" : {
+        "type" : "object",
+        "required" : [ "description", "type" ],
+        "properties" : {
+          "description" : {
+            "type" : "string",
+            "description" : "Description for the template."
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Document type 'sales_invoice','quotation','sales_order','packing','purchase_order' or 'project'."
+          },
+          "default" : {
+            "type" : "integer",
+            "description" : "Default template."
+          }
+        }
+      },
+      "Vat" : {
+        "type" : "object",
+        "properties" : {
+          "vat" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "type" : "string",
+                    "description" : "Vat name."
+                  },
+                  "percentage" : {
+                    "type" : "string",
+                    "description" : "Vat percentage."
+                  },
+                  "invoice_type" : {
+                    "type" : "string",
+                    "description" : "Vat invoice type 1-Sales, 2-Purchase.."
+                  },
+                  "vat_code" : {
+                    "type" : "string",
+                    "description" : "The vat code for the tax report."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Subscriptions" : {
+        "type" : "object",
+        "properties" : {
+          "subscriptions" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "relation_id" : {
+                    "type" : "string",
+                    "description" : "Relation id."
+                  },
+                  "contact_id" : {
+                    "type" : "string",
+                    "description" : "Contact id."
+                  },
+                  "contact_name" : {
+                    "type" : "string",
+                    "description" : "Name of the contact."
+                  },
+                  "template_id" : {
+                    "type" : "string",
+                    "description" : "Template id."
+                  },
+                  "payment_condition_id" : {
+                    "type" : "string",
+                    "description" : "Id of the payment condition."
+                  },
+                  "number" : {
+                    "type" : "string",
+                    "description" : "Invoice number."
+                  },
+                  "date" : {
+                    "type" : "string",
+                    "description" : "Invoice date."
+                  },
+                  "expiry_days" : {
+                    "type" : "string",
+                    "description" : "Amount of days until invoice expiry after invoice date."
+                  },
+                  "expiry_date" : {
+                    "type" : "string",
+                    "description" : "Date of invoice expiry."
+                  },
+                  "expired" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice expired (1 = expired)."
+                  },
+                  "total_price_excl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount excluding tax."
+                  },
+                  "total_price_incl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount including tax."
+                  },
+                  "tax_option" : {
+                    "type" : "string",
+                    "description" : "Invoice set to include(\"incl\") or exclude(\"excl\") taxes."
+                  },
+                  "comment" : {
+                    "type" : "string",
+                    "description" : "Extra comment included with the invoice."
+                  },
+                  "footer_text" : {
+                    "type" : "string",
+                    "description" : "Footer text included with the invoice."
+                  },
+                  "reference" : {
+                    "type" : "string",
+                    "description" : "Invoice reference."
+                  },
+                  "concept" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice a concept (1 = concept)."
+                  },
+                  "subscription_frequency" : {
+                    "type" : "string",
+                    "description" : "How often the invoice is sent (\"Day\", \"Week\", \"4 weeks\", \"Month\", \"2 months\", \"Quarter\", \"Half year\", \"Year\")."
+                  },
+                  "subscription_start_date" : {
+                    "type" : "string",
+                    "description" : "Start date of invoice subscription."
+                  },
+                  "subscription_invoice_date" : {
+                    "type" : "string",
+                    "description" : "Date of next invoice."
+                  },
+                  "subscription_end_date" : {
+                    "type" : "string",
+                    "description" : "End date of invoice subscription."
+                  },
+                  "subscription_restriction" : {
+                    "type" : "integer",
+                    "description" : "Is restriction enabled (1 = enabled)"
+                  },
+                  "subscription_times" : {
+                    "type" : "integer",
+                    "description" : "Maximum amount of times the invoice is sent."
+                  },
+                  "subscription_send" : {
+                    "type" : "integer",
+                    "description" : "Is send automatically enabled (1 = enabled)."
+                  },
+                  "reminder_status" : {
+                    "type" : "integer",
+                    "description" : "State of the reminder (1 = reminder, 2 = aanmaning, 3 = pre-incasso, 4 = incassobureau)."
+                  },
+                  "last_reminder_date" : {
+                    "type" : "string",
+                    "description" : "Date of the last reminder."
+                  },
+                  "attachments" : {
+                    "type" : "object",
+                    "properties" : {
+                      "attachment" : {
+                        "type" : "string",
+                        "description" : "Example attachment."
+                      }
+                    }
+                  },
+                  "line" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "object",
+                        "properties" : {
+                          "info" : {
+                            "type" : "integer",
+                            "description" : "Is it a invoice info line (1 = true)."
+                          },
+                          "qty" : {
+                            "type" : "number",
+                            "description" : "The quantity of the product/service."
+                          },
+                          "product_id" : {
+                            "type" : "integer",
+                            "description" : "The id of the product/service."
+                          },
+                          "description" : {
+                            "type" : "string",
+                            "description" : "Description of the product/service."
+                          },
+                          "amount" : {
+                            "type" : "number",
+                            "description" : "Amount of the invoice."
+                          },
+                          "discount" : {
+                            "type" : "number",
+                            "description" : "Discount percentage with 2 decimals without % sign."
+                          },
+                          "tax_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the tax that was applied."
+                          },
+                          "tax_percentage" : {
+                            "type" : "number",
+                            "description" : "Percentage of the tax that was applied."
+                          },
+                          "ledger_account_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the ledger account used."
+                          },
+                          "costs_id" : {
+                            "type" : "integer",
+                            "description" : "The id of the cost centre."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Purchase_invoices" : {
+        "type" : "object",
+        "properties" : {
+          "purchase" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "relation_id" : {
+                    "type" : "string",
+                    "description" : "Relation id."
+                  },
+                  "number" : {
+                    "type" : "string",
+                    "description" : "Invoice number."
+                  },
+                  "date" : {
+                    "type" : "string",
+                    "description" : "Invoice date."
+                  },
+                  "total_price_excl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount excluding tax."
+                  },
+                  "total_price_incl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount including tax."
+                  },
+                  "tax_option" : {
+                    "type" : "string",
+                    "description" : "Invoice set to include(\"incl\") or exclude(\"excl\") taxes."
+                  },
+                  "exported" : {
+                    "type" : "integer",
+                    "description" : "Has the invoice been exported (1 = exported)."
+                  },
+                  "export_date" : {
+                    "type" : "string",
+                    "description" : "Date of invoice export."
+                  },
+                  "expiry_date" : {
+                    "type" : "string",
+                    "description" : "Date of invoice expiry."
+                  },
+                  "attachments" : {
+                    "type" : "object",
+                    "properties" : {
+                      "attachment" : {
+                        "type" : "string",
+                        "description" : "Example attachment."
+                      }
+                    }
+                  },
+                  "line" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "object",
+                        "properties" : {
+                          "description" : {
+                            "type" : "string",
+                            "description" : "Description of the product/service."
+                          },
+                          "amount" : {
+                            "type" : "number",
+                            "description" : "Amount of the invoice."
+                          },
+                          "tax_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the tax that was applied."
+                          },
+                          "tax_percentage" : {
+                            "type" : "number",
+                            "description" : "Percentage of the tax that was applied."
+                          },
+                          "ledger_account_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the ledger account used."
+                          },
+                          "costs_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the cost centre."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Sales_invoices" : {
+        "type" : "object",
+        "properties" : {
+          "sales" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "relation_id" : {
+                    "type" : "string",
+                    "description" : "Relation id."
+                  },
+                  "contact_id" : {
+                    "type" : "string",
+                    "description" : "Contact id."
+                  },
+                  "contact_name" : {
+                    "type" : "string",
+                    "description" : "Name of the contact."
+                  },
+                  "template_id" : {
+                    "type" : "string",
+                    "description" : "Template id."
+                  },
+                  "payment_condition_id" : {
+                    "type" : "string",
+                    "description" : "Id of the payment condition."
+                  },
+                  "number" : {
+                    "type" : "string",
+                    "description" : "Invoice number."
+                  },
+                  "date" : {
+                    "type" : "string",
+                    "description" : "Invoice date."
+                  },
+                  "expiry_days" : {
+                    "type" : "string",
+                    "description" : "Amount of days until invoice expiry after invoice date."
+                  },
+                  "expiry_date" : {
+                    "type" : "string",
+                    "description" : "Date of invoice expiry."
+                  },
+                  "expired" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice expired (1 = expired)."
+                  },
+                  "total_price_excl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount excluding tax."
+                  },
+                  "total_price_incl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount including tax."
+                  },
+                  "tax_option" : {
+                    "type" : "string",
+                    "description" : "Invoice set to include(\"incl\") or exclude(\"excl\") taxes."
+                  },
+                  "comment" : {
+                    "type" : "string",
+                    "description" : "Extra comment included with the invoice."
+                  },
+                  "footer_text" : {
+                    "type" : "string",
+                    "description" : "Footer text included with the invoice."
+                  },
+                  "reference" : {
+                    "type" : "string",
+                    "description" : "Invoice reference."
+                  },
+                  "concept" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice a concept (1 = concept)."
+                  },
+                  "reminder_status" : {
+                    "type" : "integer",
+                    "description" : "State of the reminder (1 = reminder, 2 = aanmaning, 3 = pre-incasso, 4 = incassobureau)."
+                  },
+                  "last_reminder_date" : {
+                    "type" : "string",
+                    "description" : "Date of the last reminder."
+                  },
+                  "attachments" : {
+                    "type" : "object",
+                    "properties" : {
+                      "attachment" : {
+                        "type" : "string",
+                        "description" : "Example attachment."
+                      }
+                    }
+                  },
+                  "line" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "object",
+                        "properties" : {
+                          "info" : {
+                            "type" : "integer",
+                            "description" : "Is it a invoice info line (1 = true)."
+                          },
+                          "qty" : {
+                            "type" : "number",
+                            "description" : "The quantity of the product/service."
+                          },
+                          "product_id" : {
+                            "type" : "integer",
+                            "description" : "The id of the product/service."
+                          },
+                          "description" : {
+                            "type" : "string",
+                            "description" : "Description of the product/service."
+                          },
+                          "amount" : {
+                            "type" : "number",
+                            "description" : "Amount of the invoice."
+                          },
+                          "discount" : {
+                            "type" : "number",
+                            "description" : "Discount percentage with 2 decimals without % sign."
+                          },
+                          "tax_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the tax that was applied."
+                          },
+                          "tax_percentage" : {
+                            "type" : "number",
+                            "description" : "Percentage of the tax that was applied."
+                          },
+                          "ledger_account_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the ledger account used."
+                          },
+                          "costs_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the cost centre."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Salesbook" : {
+        "type" : "object",
+        "properties" : {
+          "sales" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "relation_id" : {
+                    "type" : "string",
+                    "description" : "Relation id."
+                  },
+                  "contact_id" : {
+                    "type" : "string",
+                    "description" : "Contact id."
+                  },
+                  "contact_name" : {
+                    "type" : "string",
+                    "description" : "Name of the contact."
+                  },
+                  "template_id" : {
+                    "type" : "string",
+                    "description" : "Template id."
+                  },
+                  "payment_condition_id" : {
+                    "type" : "string",
+                    "description" : "Id of the payment condition."
+                  },
+                  "number" : {
+                    "type" : "string",
+                    "description" : "Invoice number."
+                  },
+                  "date" : {
+                    "type" : "string",
+                    "description" : "Invoice date."
+                  },
+                  "expiry_days" : {
+                    "type" : "string",
+                    "description" : "Amount of days until invoice expiry after invoice date."
+                  },
+                  "expiry_date" : {
+                    "type" : "string",
+                    "description" : "Date of invoice expiry."
+                  },
+                  "expired" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice expired (1 = expired)."
+                  },
+                  "total_price_excl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount excluding tax."
+                  },
+                  "total_price_incl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount including tax."
+                  },
+                  "tax_option" : {
+                    "type" : "string",
+                    "description" : "Invoice set to include(\"incl\") or exclude(\"excl\") taxes."
+                  },
+                  "comment" : {
+                    "type" : "string",
+                    "description" : "Extra comment included with the invoice."
+                  },
+                  "footer_text" : {
+                    "type" : "string",
+                    "description" : "Footer text included with the invoice."
+                  },
+                  "reference" : {
+                    "type" : "string",
+                    "description" : "Invoice reference."
+                  },
+                  "concept" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice a concept (1 = concept)."
+                  },
+                  "reminder_status" : {
+                    "type" : "integer",
+                    "description" : "State of the reminder (1 = reminder, 2 = aanmaning, 3 = pre-incasso, 4 = incassobureau)."
+                  },
+                  "last_reminder_date" : {
+                    "type" : "string",
+                    "description" : "Date of the last reminder."
+                  },
+                  "attachments" : {
+                    "type" : "object",
+                    "properties" : {
+                      "attachment" : {
+                        "type" : "string",
+                        "description" : "Example attachment."
+                      }
+                    }
+                  },
+                  "line" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "object",
+                        "properties" : {
+                          "description" : {
+                            "type" : "string",
+                            "description" : "Description of the product/service."
+                          },
+                          "amount" : {
+                            "type" : "number",
+                            "description" : "Amount of the invoice."
+                          },
+                          "tax_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the tax that was applied."
+                          },
+                          "tax_percentage" : {
+                            "type" : "number",
+                            "description" : "Percentage of the tax that was applied."
+                          },
+                          "ledger_account_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the ledger account used."
+                          },
+                          "costs_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the cost centre."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Quotations" : {
+        "type" : "object",
+        "properties" : {
+          "quotations" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "relation_id" : {
+                    "type" : "string",
+                    "description" : "Relation id."
+                  },
+                  "contact_id" : {
+                    "type" : "string",
+                    "description" : "Contact id."
+                  },
+                  "contact_name" : {
+                    "type" : "string",
+                    "description" : "Name of the contact."
+                  },
+                  "template_id" : {
+                    "type" : "string",
+                    "description" : "Template id."
+                  },
+                  "payment_condition_id" : {
+                    "type" : "string",
+                    "description" : "Id of the payment condition."
+                  },
+                  "number" : {
+                    "type" : "string",
+                    "description" : "Invoice number."
+                  },
+                  "date" : {
+                    "type" : "string",
+                    "description" : "Invoice date."
+                  },
+                  "expiry_days" : {
+                    "type" : "string",
+                    "description" : "Amount of days until invoice expiry after invoice date."
+                  },
+                  "expiry_date" : {
+                    "type" : "string",
+                    "description" : "Date of invoice expiry."
+                  },
+                  "expired" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice expired (1 = expired)."
+                  },
+                  "total_price_excl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount excluding tax."
+                  },
+                  "total_price_incl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount including tax."
+                  },
+                  "tax_option" : {
+                    "type" : "string",
+                    "description" : "Invoice set to include(\"incl\") or exclude(\"excl\") taxes."
+                  },
+                  "discount" : {
+                    "type" : "number",
+                    "description" : "Discount percentage with 2 decimals without % sign."
+                  },
+                  "comment" : {
+                    "type" : "string",
+                    "description" : "Extra comment included with the invoice."
+                  },
+                  "footer_text" : {
+                    "type" : "string",
+                    "description" : "Footer text included with the invoice."
+                  },
+                  "reference" : {
+                    "type" : "string",
+                    "description" : "Invoice reference."
+                  },
+                  "concept" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice a concept (1 = concept)."
+                  },
+                  "accepted" : {
+                    "type" : "integer",
+                    "description" : "If quotation is accepted (1 = accepted)."
+                  },
+                  "accepted_by_relation" : {
+                    "type" : "integer",
+                    "description" : "If quotation is accepted by relation (1 = accepted)."
+                  },
+                  "accepted_by" : {
+                    "type" : "string",
+                    "description" : "Name of person who accepted the quotation."
+                  },
+                  "accepted_date" : {
+                    "type" : "string",
+                    "description" : "Date that the quotation was accepted."
+                  },
+                  "accepted_iban" : {
+                    "type" : "string",
+                    "description" : "Iban of the person who accepted the quotation."
+                  },
+                  "accepted_note" : {
+                    "type" : "string",
+                    "description" : "Note of the person who accepted the quotation."
+                  },
+                  "accepted_ip" : {
+                    "type" : "string",
+                    "description" : "Ip adress of the person who accepted the quotation."
+                  },
+                  "attachments" : {
+                    "type" : "object",
+                    "properties" : {
+                      "attachment" : {
+                        "type" : "string",
+                        "description" : "Example attachment."
+                      }
+                    }
+                  },
+                  "line" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "object",
+                        "properties" : {
+                          "info" : {
+                            "type" : "integer",
+                            "description" : "Is it a invoice info line (1 = true)."
+                          },
+                          "qty" : {
+                            "type" : "number",
+                            "description" : "The quantity of the product/service."
+                          },
+                          "product_id" : {
+                            "type" : "integer",
+                            "description" : "The id of the product/service."
+                          },
+                          "description" : {
+                            "type" : "string",
+                            "description" : "Description of the product/service."
+                          },
+                          "amount" : {
+                            "type" : "number",
+                            "description" : "Amount of the invoice."
+                          },
+                          "discount" : {
+                            "type" : "number",
+                            "description" : "Discount percentage with 2 decimals without % sign."
+                          },
+                          "tax_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the tax that was applied."
+                          },
+                          "tax_percentage" : {
+                            "type" : "number",
+                            "description" : "Percentage of the tax that was applied."
+                          },
+                          "amount_tax" : {
+                            "type" : "number",
+                            "description" : "Amount of tax that needs to be paid."
+                          },
+                          "ledger_account_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the ledger account used."
+                          },
+                          "costs_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the cost centre."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Salesorders" : {
+        "type" : "object",
+        "properties" : {
+          "salesorders" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "relation_id" : {
+                    "type" : "string",
+                    "description" : "Relation id."
+                  },
+                  "contact_id" : {
+                    "type" : "string",
+                    "description" : "Contact id."
+                  },
+                  "contact_name" : {
+                    "type" : "string",
+                    "description" : "Name of the contact."
+                  },
+                  "template_id" : {
+                    "type" : "string",
+                    "description" : "Template id."
+                  },
+                  "payment_condition_id" : {
+                    "type" : "string",
+                    "description" : "Id of the payment condition."
+                  },
+                  "number" : {
+                    "type" : "string",
+                    "description" : "Invoice number."
+                  },
+                  "date" : {
+                    "type" : "string",
+                    "description" : "Invoice date."
+                  },
+                  "expiry_days" : {
+                    "type" : "string",
+                    "description" : "Amount of days until invoice expiry after invoice date."
+                  },
+                  "expiry_date" : {
+                    "type" : "string",
+                    "description" : "Date of invoice expiry."
+                  },
+                  "expired" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice expired (1 = expired)."
+                  },
+                  "total_price_excl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount excluding tax."
+                  },
+                  "total_price_incl_tax" : {
+                    "type" : "number",
+                    "description" : "Total amount including tax."
+                  },
+                  "tax_option" : {
+                    "type" : "string",
+                    "description" : "Invoice set to include(\"incl\") or exclude(\"excl\") taxes."
+                  },
+                  "discount" : {
+                    "type" : "number",
+                    "description" : "Discount percentage with 2 decimals without % sign."
+                  },
+                  "comment" : {
+                    "type" : "string",
+                    "description" : "Extra comment included with the invoice."
+                  },
+                  "footer_text" : {
+                    "type" : "string",
+                    "description" : "Footer text included with the invoice."
+                  },
+                  "reference" : {
+                    "type" : "string",
+                    "description" : "Invoice reference."
+                  },
+                  "concept" : {
+                    "type" : "integer",
+                    "description" : "Is the invoice a concept (1 = concept)."
+                  },
+                  "accepted" : {
+                    "type" : "integer",
+                    "description" : "If quotation is accepted (1 = accepted)."
+                  },
+                  "accepted_by_relation" : {
+                    "type" : "integer",
+                    "description" : "If quotation is accepted by relation (1 = accepted)."
+                  },
+                  "accepted_by" : {
+                    "type" : "string",
+                    "description" : "Name of person who accepted the quotation."
+                  },
+                  "accepted_date" : {
+                    "type" : "string",
+                    "description" : "Date that the quotation was accepted."
+                  },
+                  "accepted_iban" : {
+                    "type" : "string",
+                    "description" : "Iban of the person who accepted the quotation."
+                  },
+                  "accepted_note" : {
+                    "type" : "string",
+                    "description" : "Note of the person who accepted the quotation."
+                  },
+                  "accepted_ip" : {
+                    "type" : "string",
+                    "description" : "Ip adress of the person who accepted the quotation."
+                  },
+                  "attachments" : {
+                    "type" : "object",
+                    "properties" : {
+                      "attachment" : {
+                        "type" : "string",
+                        "description" : "Example attachment."
+                      }
+                    }
+                  },
+                  "line" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "object",
+                        "properties" : {
+                          "info" : {
+                            "type" : "integer",
+                            "description" : "Is it a invoice info line (1 = true)."
+                          },
+                          "qty" : {
+                            "type" : "number",
+                            "description" : "The quantity of the product/service."
+                          },
+                          "product_id" : {
+                            "type" : "integer",
+                            "description" : "The id of the product/service."
+                          },
+                          "description" : {
+                            "type" : "string",
+                            "description" : "Description of the product/service."
+                          },
+                          "amount" : {
+                            "type" : "number",
+                            "description" : "Amount of the invoice."
+                          },
+                          "discount" : {
+                            "type" : "number",
+                            "description" : "Discount percentage with 2 decimals without % sign."
+                          },
+                          "tax_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the tax that was applied."
+                          },
+                          "tax_percentage" : {
+                            "type" : "number",
+                            "description" : "Percentage of the tax that was applied."
+                          },
+                          "amount_tax" : {
+                            "type" : "number",
+                            "description" : "Amount of tax that needs to be paid."
+                          },
+                          "ledger_account_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the ledger account used."
+                          },
+                          "costs_id" : {
+                            "type" : "integer",
+                            "description" : "Id of the cost centre."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Contacts2" : {
+        "type" : "object",
+        "properties" : {
+          "contact" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "relation_id" : {
+                    "type" : "string",
+                    "description" : "Relation id."
+                  },
+                  "initials" : {
+                    "type" : "string",
+                    "description" : "Initials of contact."
+                  },
+                  "firstname" : {
+                    "type" : "string",
+                    "description" : "First name of the contact."
+                  },
+                  "surname_prefix" : {
+                    "type" : "string",
+                    "description" : "Surname prefix of contact."
+                  },
+                  "surname" : {
+                    "type" : "string",
+                    "description" : "Surname of contact."
+                  },
+                  "gender" : {
+                    "type" : "string",
+                    "description" : "gender of contact (m/f)."
+                  },
+                  "function" : {
+                    "type" : "string",
+                    "description" : "Function of contact."
+                  },
+                  "department" : {
+                    "type" : "string",
+                    "description" : "The department this contact belongs to."
+                  },
+                  "phone" : {
+                    "type" : "string",
+                    "description" : "Phone number of contact."
+                  },
+                  "mobile" : {
+                    "type" : "string",
+                    "description" : "Mobile number of contact."
+                  },
+                  "email" : {
+                    "type" : "string",
+                    "description" : "Email adress of contact."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Costs" : {
+        "type" : "object",
+        "properties" : {
+          "costs" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "number" : {
+                    "type" : "number",
+                    "description" : "Number of costs center."
+                  },
+                  "description" : {
+                    "type" : "string",
+                    "description" : "Description of the costs center."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Journals" : {
+        "type" : "object",
+        "properties" : {
+          "journals" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "journal_number" : {
+                    "type" : "number",
+                    "description" : "Number of journal."
+                  },
+                  "description" : {
+                    "type" : "string",
+                    "description" : "Description of the journal."
+                  },
+                  "type" : {
+                    "type" : "string",
+                    "description" : "Journal type (0 = cash book, 1 = bank, 2 = sales book, 3 = purchase book, 4 = memorandum book)."
+                  },
+                  "ledger_id" : {
+                    "type" : "string",
+                    "description" : "ledger for journal."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Products" : {
+        "type" : "object",
+        "properties" : {
+          "products" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "product_code_sales" : {
+                    "type" : "string",
+                    "description" : "name/code of the product for sales."
+                  },
+                  "product_code_purchase" : {
+                    "type" : "string",
+                    "description" : "name/code of the product for purchase."
+                  },
+                  "description_sales" : {
+                    "type" : "string",
+                    "description" : "description of the product for sales."
+                  },
+                  "description_purchase" : {
+                    "type" : "string",
+                    "description" : "description of the product for purchase."
+                  },
+                  "product_type" : {
+                    "type" : "string",
+                    "description" : "the type of product."
+                  },
+                  "amount_sales" : {
+                    "type" : "string",
+                    "description" : "the cost of the product for sales."
+                  },
+                  "amount_purchase" : {
+                    "type" : "string",
+                    "description" : "the cost of the product for purchase."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Currencies" : {
+        "type" : "object",
+        "properties" : {
+          "currencies" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "currency" : {
+                    "type" : "string",
+                    "description" : "The code of the currency."
+                  },
+                  "description" : {
+                    "type" : "string",
+                    "description" : "Description of the currency."
+                  },
+                  "rate" : {
+                    "type" : "string",
+                    "description" : "Exchange rate compared to EUR."
+                  },
+                  "autoupdate" : {
+                    "type" : "integer",
+                    "description" : "If the exchange rate gets updated at night (1 = enabled)."
+                  },
+                  "journal_id" : {
+                    "type" : "integer",
+                    "description" : "The id of the journal."
+                  },
+                  "ledger_id" : {
+                    "type" : "integer",
+                    "description" : "The id of the ledger."
+                  },
+                  "bank_id" : {
+                    "type" : "integer",
+                    "description" : "Id of the connected bank (0 = no bank connected)."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Memorandum" : {
+        "type" : "object",
+        "properties" : {
+          "memorandumbooks" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "journal_id" : {
+                    "type" : "integer",
+                    "description" : "Id of the journal."
+                  },
+                  "date" : {
+                    "type" : "string",
+                    "description" : "Date of the entry."
+                  },
+                  "description" : {
+                    "type" : "string",
+                    "description" : "Description of the entry"
+                  },
+                  "line" : {
+                    "type" : "object",
+                    "properties" : {
+                      "id" : {
+                        "type" : "object",
+                        "properties" : {
+                          "ledger_id" : {
+                            "type" : "integer",
+                            "description" : "ID of ledger."
+                          },
+                          "costs_id" : {
+                            "type" : "number",
+                            "description" : "Id of the cost centre."
+                          },
+                          "description" : {
+                            "type" : "string",
+                            "description" : "Description of the entry line."
+                          },
+                          "amount" : {
+                            "type" : "integer",
+                            "description" : "The amount of the entry line."
+                          }                   
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Create_Subscription" : {
+        "properties" : {
+          "relation_id" : {
+            "type" : "integer",
+            "description" : "Id of relation."
+          },
+          "contact_name" : {
+            "type" : "string",
+            "description" : "Name of contactperson."
+          },
+          "reference" : {
+            "type" : "string",
+            "description" : "Name of referenceperson."
+          },
+          "invoice_date" : {
+            "type" : "string",
+            "description" : "Date of the invoice."
+          },
+          "payment_condition_id" : {
+            "type" : "integer",
+            "description" : "ID of a payment condition."
+          },
+          "currency_id" : {
+            "type" : "integer",
+            "description" : "Id of the currency."
+          },
+          "vat_option" : {
+            "type" : "string",
+            "description" : "If amount is incl or excl vat (must be 'incl' or 'excl')."
+          },
+          "template_id" : {
+            "type" : "integer",
+            "description" : "Id of template."
+          },
+          "comment" : {
+            "type" : "string",
+            "description" : "comment of the invoice."
+          },
+          "footer" : {
+            "type" : "string",
+            "description" : "footer of the invoice."
+          },
+          "subscription_number" : {
+            "type" : "string",
+            "description" : "the desired subscription number."
+          },
+          "subscription_type_id" : {
+            "type" : "integer",
+            "description" : "Id of the subscription type."
+          },
+          "subscription_frequency" : {
+            "type" : "string",
+            "description" : "How often the invoice is sent (\"Day\", \"Week\", \"4 weeks\", \"Month\", \"2 months\", \"Quarter\", \"Half year\", \"Year\")."
+          },
+          "subscription_start_date" : {
+            "type" : "string",
+            "description" : "Start date of invoice subscription."
+          },
+          "subscription_invoice_date" : {
+            "type" : "string",
+            "description" : "Date of next invoice."
+          },
+          "subscription_end_date" : {
+            "type" : "string",
+            "description" : "End date of invoice subscription."
+          },
+          "subscription_restriction" : {
+            "type" : "integer",
+            "description" : "Is restriction enabled (1 = enabled)"
+          },
+          "subscription_times" : {
+            "type" : "integer",
+            "description" : "Maximum amount of times the invoice is sent."
+          },
+          "subscription_send" : {
+            "type" : "integer",
+            "description" : "Is send automatically enabled (1 = enabled)."
+          },
+          "lines" : {
+            "type" : "array",
+            "description" : "Array containing all lines.",
+            "items" : {
+              "$ref" : "#/components/schemas/Single_line"
+            }
+          }
+        },
+        "type" : "object"
+      },
+      "Create_Salesbook" : {
+        "properties" : {
+          "relation_id" : {
+            "type" : "integer",
+            "description" : "Id of relation."
+          },
+          "invoice_date" : {
+            "type" : "string",
+            "description" : "Date of the invoice."
+          },
+          "invoice_expiry_date" : {
+            "type" : "string",
+            "description" : "Date of the invoice expiry."
+          },
+          "number" : {
+            "type" : "string",
+            "description" : "Number of invoice."
+          },
+          "payment_condition_id" : {
+            "type" : "integer",
+            "description" : "ID of a payment condition."
+          },
+          "currency_id" : {
+            "type" : "integer",
+            "description" : "Id of the currency."
+          },
+          "invoice_total" : {
+            "type" : "number",
+            "description" : "Total amount of the invoice."
+          },
+          "vat_option" : {
+            "type" : "string",
+            "description" : "If amount is incl or excl vat (must be 'incl' or 'excl')."
+          },
+          "pdf" : {
+            "type" : "string",
+            "description" : "Base64 encode of invoice pdf."
+          },
+          "lines" : {
+            "type" : "array",
+            "description" : "Array containing all lines.",
+            "items" : {
+              "$ref" : "#/components/schemas/Single_line_salesbook"
+            }
+          }
+        },
+        "type" : "object"
+      },
+      "Single_line_salesbook" : {
+        "properties" : {
+          "description" : {
+            "type" : "string",
+            "description" : "A description of the product/service."
+          },
+          "amount" : {
+            "type" : "number",
+            "description" : "Price with a maximum of 2 decimals."
+          },
+          "vat_id" : {
+            "type" : "integer",
+            "description" : "Id of the vat."
+          },
+          "ledger_id" : {
+            "type" : "integer",
+            "description" : "ID of ledger"
+          },
+          "costs_id" : {
+            "type" : "integer",
+            "description" : "Id of the cost centre."
+          }
+        },
+        "type" : "object"
+      },
+      "Create_Memorandum" : {
+        "type" : "object",
+        "properties" : {
+          "journal_id" : {
+            "type" : "integer",
+            "description" : "Id of the journal."
+          },
+          "date" : {
+            "type" : "string",
+            "description" : "Date of the entry."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the entry"
+          },
+          "lines" : {
+            "type" : "array",
+            "description" : "Array containing all lines.",
+            "items" : {
+              "$ref" : "#/components/schemas/memorandum_line"
+            }
+          }
+        }
+      },
+      "memorandum_line" : {
+        "properties" : {
+          "ledger_id" : {
+            "type" : "integer",
+            "description" : "ID of ledger."
+          },
+          "costs_id" : {
+            "type" : "number",
+            "description" : "Id of the cost centre."
+          },
+          "description" : {
+            "type" : "integer",
+            "description" : "Description of the entry line."
+          },
+          "debit" : {
+            "type" : "integer",
+            "description" : "The amount of debit."
+          },
+          "credit" : {
+            "type" : "integer",
+            "description" : "The amount of credit."
+          }
+        },
+        "type" : "object"
+      },
+      "Vehicles" : {
+        "type" : "object",
+        "properties" : {
+          "vehicles" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "description" : {
+                    "type" : "string",
+                    "description" : "Description of the vehicle."
+                  },
+                  "licence_plate" : {
+                    "type" : "string",
+                    "description" : "License plate of the vehicle."
+                  },
+                  "odometer_reading" : {
+                    "type" : "string",
+                    "description" : "mileage at point of registration"
+                  },
+                  "trackjack_id" : {
+                    "type" : "string",
+                    "description" : "Trackjack id of vehicle (0 = deactivated)"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Rides" : {
+        "type" : "object",
+        "properties" : {
+          "rides" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "vehicle_id" : {
+                    "type" : "integer",
+                    "description" : "Id of used vehicle."
+                  },
+                  "date" : {
+                    "type" : "string",
+                    "description" : "Date of ride."
+                  },
+                  "from_relation" : {
+                    "type" : "integer",
+                    "description" : "startpoint will be the adress of relation."
+                  },
+                  "from_country" : {
+                    "type" : "string",
+                    "description" : "Starting country."
+                  },
+                  "from_zip" : {
+                    "type" : "string",
+                    "description" : "Starting zip code."
+                  },
+                  "to_relation" : {
+                    "type" : "integer",
+                    "description" : "Destination will be the adress of relation."
+                  },
+                  "to_country" : {
+                    "type" : "string",
+                    "description" : "Destination country."
+                  },
+                  "to_zip" : {
+                    "type" : "string",
+                    "description" : "Destination zip code."
+                  },
+                  "distance" : {
+                    "type" : "integer",
+                    "description" : "Amount of km from start to finish."
+                  },
+                  "description" : {
+                    "type" : "string",
+                    "description" : "Description of the ride."
+                  },
+                  "type" : {
+                    "type" : "string",
+                    "description" : "Type of the ride (business / private)."
+                  },
+                  "comment" : {
+                    "type" : "string",
+                    "description" : "Extra comment for ride."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Create_Rides" : {
+        "type" : "object",
+        "properties" : {
+          "vehicle_id" : {
+            "type" : "integer",
+            "description" : "Id of used vehicle."
+          },
+          "date" : {
+            "type" : "string",
+            "description" : "Date of ride."
+          },
+          "from_relation" : {
+            "type" : "integer",
+            "description" : "startpoint will be the adress of relation."
+          },
+          "from_country" : {
+            "type" : "string",
+            "description" : "Starting country."
+          },
+          "from_zip" : {
+            "type" : "string",
+            "description" : "Starting zip code."
+          },
+          "to_relation" : {
+            "type" : "integer",
+            "description" : "Destination will be the adress of relation."
+          },
+          "to_country" : {
+            "type" : "string",
+            "description" : "Destination country."
+          },
+          "to_zip" : {
+            "type" : "string",
+            "description" : "Destination zip code."
+          },
+          "distance" : {
+            "type" : "integer",
+            "description" : "Amount of km from start to finish."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the ride."
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Type of the ride (business / private)."
+          },
+          "comment" : {
+            "type" : "string",
+            "description" : "Extra comment for ride."
+          }
+        }
+      },
+      "Create_Vehicles" : {
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the vehicle."
+          },
+          "licence_plate" : {
+            "type" : "string",
+            "description" : "License plate of the vehicle."
+          },
+          "odometer_reading" : {
+            "type" : "string",
+            "description" : "mileage at point of registration"
+          }
+        }
+      },
+      "Create_Receipt" : {
+        "type" : "object",
+        "properties" : {
+          "date" : {
+            "type" : "string",
+            "description" : "Date of the receipt (YYYY-mm-dd)"
+          },
+          "amount" : {
+            "type" : "number",
+            "description" : "Amount of the receipt"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description of the receipt"
+          },
+          "ledger_id" : {
+            "type" : "integer",
+            "description" : "Ledger id of the receipt"
+          },
+          "pdf" : {
+            "type" : "string",
+            "description" : "Base64 encoded pdf"
+          }
+        }
+      },
+      "Receipts" : {
+        "type" : "object",
+        "properties" : {
+          "receipts" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "object",
+                "properties" : {
+                  "receipt_id" : {
+                    "type" : "integer",
+                    "description" : "Id of receipt."
+                  },
+                  "entry_id" : {
+                    "type" : "integer",
+                    "description" : "Entry id of receipt."
+                  },
+                  "user_id" : {
+                    "type" : "integer",
+                    "description" : "User id of receipt."
+                  },
+                  "type" : {
+                    "type" : "string",
+                    "description" : "Type of receipt."
+                  },
+                  "date" : {
+                    "type" : "string",
+                    "description" : "Date of receipt."
+                  },
+                  "amount" : {
+                    "type" : "number",
+                    "description" : "Amount of receipt."
+                  },
+                  "ledger_id" : {
+                    "type" : "integer",
+                    "description" : "Ledger id of receipt."
+                  },
+                  "description" : {
+                    "type" : "string",
+                    "description" : "Description of receipt."
+                  },
+                  "go2ubl" : {
+                    "type" : "integer",
+                    "description" : "If go2ubl is activated (1 = enabled)."
+                  },
+                  "ubl" : {
+                    "type" : "integer",
+                    "description" : "If ubl is activated (1 = enabled)."
+                  },
+                  "ubl_data" : {
+                    "type" : "string",
+                    "description" : "ubl data of receipt."
+                  },
+                  "robot" : {
+                    "type" : "integer",
+                    "description" : "If booking robot is activated (1 = enabled)."
+                  },
+                  "dropbox" : {
+                    "type" : "integer",
+                    "description" : "If dropbox is activated (1 = enabled)."
+                  },
+                  "drive" : {
+                    "type" : "integer",
+                    "description" : "If google drive is activated (1 = enabled)."
+                  },
+                  "date_create" : {
+                    "type" : "string",
+                    "description" : "Creation date of receipt."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Create_purchase_invoice" : {
+        "type" : "object",
+        "properties" : {
+          "relation_id" : {
+            "type" : "integer",
+            "description" : "Id of relation."
+          },
+          "invoice_date" : {
+            "type" : "string",
+            "description" : "Date of invoice."
+          },
+          "invoice_expiry_date" : {
+            "type" : "string",
+            "description" : "Expiry date of invoice."
+          },
+          "number" : {
+            "type" : "string",
+            "description" : "invoice number."
+          },
+          "invoice_total" : {
+            "type" : "number",
+            "description" : "total amount of the invoice."
+          },
+          "pdf" : {
+            "type" : "string",
+            "description" : "Base64 encoded pdf file"
+          },
+          "lines" : {
+            "type" : "array",
+            "description" : "Array containing all lines.",
+            "items" : {
+              "$ref" : "#/components/schemas/Single_line_purchase_invoice"
+            }
+          }
+        }
+      },
+      "Single_line_purchase_invoice" : {
+        "properties" : {
+          "description" : {
+            "type" : "string",
+            "description" : "A description of the product/service."
+          },
+          "amount" : {
+            "type" : "number",
+            "description" : "Price excl vat with a maximum of 2 decimals."
+          },
+          "vat_amount" : {
+            "type" : "number",
+            "description" : "Amount of vat with a maximum of 2 decimals."
+          },
+          "vat_id" : {
+            "type" : "integer",
+            "description" : "Id of the vat."
+          },
+          "ledger_id" : {
+            "type" : "integer",
+            "description" : "ID of ledger"
+          },
+          "costs_id" : {
+            "type" : "integer",
+            "description" : "Id of the cost centre."
+          }
+        },
+        "type" : "object"
+      },
+      "Get_pdf" : {
+        "properties" : {
+          "base64" : {
+            "type" : "string",
+            "description" : "The base64 code of the pdf."
+          }
+        },
+        "type" : "object"
+      },
+      "Units" : {
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the unit."
+          },
+          "type" : {
+            "type" : "integer",
+            "description" : "The type of the unit(0 = amount, 1 = hour type)."
+          }
+        },
+        "type" : "object"
+      }, 
+      "Send" : {
+        "properties" : {
+          "invoice_id" : {
+            "type" : "integer",
+            "description" : "The ID of the invoice you want to send."
+          },
+          "method" : {
+            "type" : "string",
+            "description" : "The method to send the invoice with ('mark', 'email', 'peppol')"
+          },
+          "email_address" : {
+            "type" : "string",
+            "description" : "The type of the unit(0 = amount, 1 = hour type)."
+          }
+        },
+        "type" : "object"
+      },
+      "Report_ledger" : {
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID of the invoice."
+          },
+          "amount" : {
+            "type" : "number",
+            "description" : "Amount to be paid."
+          },
+          "ledger_id" : {
+            "type" : "integer",
+            "description" : "The ledger_id on which you want to register the payment."
+          }
+        },
+        "type" : "object"
+      },
+      "Report_balance" : {
+        "type" : "object",
+        "properties" : {
+          "balance" : {
+            "type" : "object",
+            "properties" : {
+              "ledger_id" : {
+                "type" : "object",
+                "properties" : {
+                  "results" : {
+                    "type" : "object",
+                    "description" : "Object containing all balance values of a ledger"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
