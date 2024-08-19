@@ -486,3 +486,4 @@ Data/app.db
 Data\app.db
 Data/app.db-shm
 Data/app.db-wal
+app/Data/app.db*

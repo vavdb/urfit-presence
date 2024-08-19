@@ -84,7 +84,7 @@
     private IEnumerable<ApplicationUser> _presentPeople = [];
     private List<ApplicationUser> _availablePeople = [];
     private List<TimeSlot> TimeSlots { get; set; } = [];
-    private List<ApplicationUser> People { get; set; } = [];
+    private IEnumerable<ApplicationUser> People { get; set; } = [];
     private List<Presence> Presences { get; set; } = [];
     private TimeSlot? _selectedTimeSlot;
     private DateTime? _selectedDate;
@@ -181,13 +181,13 @@
         var nearestTimeSlotId = 3;
         await using var context = await ctxf.CreateDbContextAsync();
         TimeSlots = await context.TimeSlots.ToListAsync();
-        People = await userManager.Users.ToListAsync();
+        People = await userManager.GetUsersInRoleAsync("Bootcamper");
         Presences = await context.Presences
                                  .Include(p => p.TimeSlot)
                                  .OrderBy(p => p.Date)
                                  .ThenBy(p => p.TimeSlot.StartTime)
                                  .ToListAsync();
-        _availablePeople = People;
+        _availablePeople = People.ToList();
     }
 
 

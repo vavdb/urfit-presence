@@ -7,12 +7,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     // public DbSet<Person> People { get; set; }
     public DbSet<Presence> Presences { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.LogTo(Console.WriteLine);
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("urfit");
         
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<Presence>()
                     .HasOne(p => p.ApplicationUser)
                     .WithMany(p => p.Presences)

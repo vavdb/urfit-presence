@@ -1,12 +1,20 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using urfit_presence.Data;
 
-public static class ApplicationDbInitializer
+public class ApplicationDbInitializer
 {
-    public static async Task SeedUsersAndRolesAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    private readonly UserManager<ApplicationUser> userManager;
+    private readonly RoleManager<IdentityRole> roleManager;
+
+    public ApplicationDbInitializer(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    {
+        this.userManager = userManager;
+        this.roleManager = roleManager;
+    }
+    public async Task SeedUsersAndRolesAsync()
     {
         
-        string[] roles = new string[] { "Owner", "Administrator", "User" };
+        string[] roles = new string[] { "Owner", "Administrator", "User", "Bootcamper" };
 
         foreach (string role in roles)
         {
