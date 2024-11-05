@@ -83,6 +83,7 @@ public class SubscriptionService
                 if (user.FirstName != b.Value.FirstName) user.FirstName = b.Value.FirstName;
                 if (user.SurNamePrefix != b.Value.SurnamePrefix) user.SurNamePrefix = b.Value.SurnamePrefix;
                 if (user.SurName != b.Value.Surname) user.SurName = b.Value.Surname;
+                if (user.EmailConfirmed != true) user.EmailConfirmed = true;
                 await _userManager.UpdateAsync(user);
 
                 var s = subscriptions.Subscriptions.FirstOrDefault(s => s.Value.RelationId == user.InformationRelationId).Value;

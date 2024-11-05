@@ -31,8 +31,9 @@ public class ApplicationDbInitializer
         {
             vavdb = new ApplicationUser
                     {
-                        UserName = "vavdb",
-                        Email = "vincent@urfit.nu"
+                        UserName = "vincent@urfit.nu",
+                        Email = "vincent@urfit.nu",
+                        EmailConfirmed = true
                     };
 
             var result = await userManager.CreateAsync(vavdb, "Dummy123!");
@@ -41,8 +42,9 @@ public class ApplicationDbInitializer
         {
             ljvdbb = new ApplicationUser
                      {
-                         UserName = "ljvdbb",
-                         Email = "leydi@urfit.nu"
+                         UserName = "leydi@urfit.nu",
+                         Email = "leydi@urfit.nu",
+                         EmailConfirmed = true
                      };
 
             var result = await userManager.CreateAsync(ljvdbb, "Dummy123!");
