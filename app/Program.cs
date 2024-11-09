@@ -25,7 +25,11 @@ builder.Configuration.AddUserSecrets<Program>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+}
+
 builder.Services.AddScoped<ApplicationDbInitializer>();
 
 
@@ -111,17 +115,18 @@ app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
-
-    var applicationDbInitializer =  scope.ServiceProvider.GetRequiredService<ApplicationDbInitializer>();
-    await applicationDbInitializer.SeedUsersAndRolesAsync();
-
-    var subscriptionService = scope.ServiceProvider.GetRequiredService<SubscriptionService>();
-    await subscriptionService.SyncSubscriptionsToUsers();
-}
+//
+// using (var scope = app.Services.CreateScope())
+// {
+//     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//     db.Database.Migrate();
+//
+//     var applicationDbInitializer =  scope.ServiceProvider.GetRequiredService<ApplicationDbInitializer>();
+//     await applicationDbInitializer.SeedUsersAndRolesAsync();
+//
+//     var subscriptionService = scope.ServiceProvider.GetRequiredService<SubscriptionService>();
+//     await subscriptionService.SyncSubscriptionsToUsers();
+// }
 
 // Run the application
 app.Run();
